@@ -16,6 +16,12 @@ Pashto (ps-AF) · Dari (fa-AF) · Iranian Persian (fa-IR) · English (en).
 
 **Status:** early v0.1.0 implementation. The npm package is not yet published. The repository includes buildable source, tests and a local demo. Please report any language issues or browser bugs.
 
+## Documentation and interactive playground
+
+The GitHub source includes a [full developer documentation site](demo/index.html) with an interactive datepicker demo, installation instructions, Laravel/React/Vue examples, configuration tables, methods, calendar utilities, keyboard support, styling and troubleshooting. Build and run the project locally to view it at http://localhost:4173/demo/.
+
+The demo uses the supplied Fida Rahmani Technology Services navy-and-orange logo mark, with brand colors separate from the package's customizable CSS variables. The datepicker is intentionally compact (approximately 388 px maximum on desktop) while keeping complete weekday names.
+
 ## Start locally
 
 Requires Node.js 20 or newer. The browser test in `npm run check` uses an installed Google Chrome/Chromium browser. On macOS, Chrome is normally detected in `/Applications/Google Chrome.app`; on Linux and Windows, common installation locations are detected automatically. Set `CHROME_BIN` to the absolute path of the browser executable for a nonstandard installation.

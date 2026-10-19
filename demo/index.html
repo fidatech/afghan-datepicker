@@ -3,93 +3,389 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="Afghan Datepicker: a free multilingual Jalali and Gregorian datepicker for Pashto, Dari, Persian, and English.">
-  <title>Afghan Datepicker — Multilingual calendar component</title>
+  <meta name="description" content="Afghan Datepicker documentation: accessible Pashto, Dari, Persian and English Jalali/Gregorian datepicker, examples, Laravel integration, API and live demo.">
+  <meta name="theme-color" content="#0d1e2a">
+  <title>Afghan Datepicker — Live demo and developer documentation</title>
+  <link rel="icon" type="image/webp" href="./assets/fida-mark.webp">
   <link rel="stylesheet" href="../src/datepicker.css">
-  <style>
-    :root {color-scheme:light;--ink:#1d2d49;--muted:#60728e;--line:#dfe8f3;--accent:#244a88}
-    *{box-sizing:border-box}
-    body{margin:0;background:radial-gradient(ellipse at 80% 0%,#e6efff 0%,transparent 40%),#f4f7fc;color:var(--ink);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif}
-    main{max-width:1160px;padding:64px 24px 85px;margin:auto}
-    .top{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:55px}
-    .identity{display:flex;align-items:center;gap:12px;font-weight:800;letter-spacing:-.3px}
-    .mark{display:grid;place-items:center;width:42px;height:42px;background:#244a88;color:white;border-radius:13px}
-    .mark svg{width:23px;height:23px}
-    .source{color:var(--accent);text-decoration:none;background:white;border:1px solid var(--line);border-radius:10px;padding:11px 16px;font-weight:650;font-size:13px}
-    .source:hover{border-color:#8cadd8}
-    .intro{max-width:770px;margin-bottom:36px}
-    .eyebrow{display:inline-block;background:#e5eefc;border:1px solid #c9daf4;border-radius:50px;color:#244a88;padding:7px 12px;font-weight:750;font-size:11px;letter-spacing:.13em;text-transform:uppercase;margin-bottom:16px}
-    h1{font-size:clamp(34px,5vw,55px);line-height:1.09;letter-spacing:-.045em;margin:0 0 16px}
-    .description{font-size:16px;line-height:1.75;color:var(--muted);margin:0}
-    .tagline{display:flex;gap:8px;flex-wrap:wrap;margin-top:22px}
-    .tag{background:#fff;border:1px solid var(--line);border-radius:7px;padding:6px 10px;color:#627491;font-size:12px;font-weight:600}
-    .cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
-    .card{min-width:0;position:relative;min-height:260px;padding:28px 29px;background:white;border:1px solid var(--line);border-radius:18px;box-shadow:0 8px 25px rgba(26,53,100,.035)}
-    .card-header{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:32px}
-    .card h2{font-size:20px;line-height:1.2;letter-spacing:-.3px;margin:0 0 6px;font-weight:750}
-    .card p{margin:0;color:var(--muted);font-size:12px}
-    .language-tag{background:#eef3fb;color:var(--accent);font-size:11px;padding:6px 9px;border-radius:8px;font-weight:750;white-space:nowrap;direction:ltr}
-    label{display:block;margin-bottom:9px;color:#50627d;font-size:12px;font-weight:700}
-    output{display:block;margin-top:16px;padding:11px 14px;border-radius:9px;background:#f5f8fc;border:1px solid #e5edf7;color:var(--accent);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;direction:ltr;text-align:left}
-    .bottom{margin-top:44px;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;color:var(--muted);font-size:13px}
-    .bottom a{color:var(--accent);font-weight:650;text-decoration:none}
-    .bottom code{padding:3px 6px;border:1px solid var(--line);background:white;border-radius:6px;font-size:12px}
-    @media(max-width:720px) {main{padding:26px 16px 55px}.top{margin-bottom:43px}.cards{grid-template-columns:1fr;gap:18px}.card{padding:22px 23px;min-height:240px}.card-header{margin-bottom:26px}.description{font-size:14px}}
-    @media(max-width:400px){.source{padding:9px 11px}.identity span:last-child{font-size:13px}.card{padding:20px 19px}}
-  </style>
+  <link rel="stylesheet" href="./docs.css">
 </head>
 <body>
-  <main>
-    <nav class="top" aria-label="Project">
-      <div class="identity">
-        <span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18M8 15h2"/></svg></span>
-        <span>Afghan Datepicker</span>
-      </div>
-      <a class="source" href="https://github.com/fidatech/afghan-datepicker" target="_blank" rel="noopener noreferrer">View on GitHub ↗</a>
-    </nav>
-    <header class="intro">
-      <span class="eyebrow">Open source · TypeScript</span>
-      <h1>One calendar.<br>Four languages.</h1>
-      <p class="description">A thoughtful Solar Hijri and Gregorian datepicker made for Afghan and Persian-language applications. Click a date input, then click the <strong>month</strong> or <strong>year</strong> to jump directly to another date.</p>
-      <div class="tagline"><span class="tag">RTL & LTR</span><span class="tag">Full weekday names</span><span class="tag">Month & year selectors</span><span class="tag">Gregorian ISO output</span></div>
-    </header>
-    <div class="cards">
-      <section class="card" lang="ps" dir="rtl">
-        <div class="card-header"><div><h2>پښتو</h2><p>Pashto · Solar Hijri</p></div><span class="language-tag">ps-AF</span></div>
-        <label for="ps">نېټه وټاکئ</label><input id="ps" name="ps_date">
-        <output id="ps-out" aria-live="polite">YYYY-MM-DD</output>
-      </section>
-      <section class="card" lang="fa-AF" dir="rtl">
-        <div class="card-header"><div><h2>دری</h2><p>Dari · Solar Hijri</p></div><span class="language-tag">fa-AF</span></div>
-        <label for="dari">انتخاب تاریخ</label><input id="dari" name="dari_date">
-        <output id="dari-out" aria-live="polite">YYYY-MM-DD</output>
-      </section>
-      <section class="card" lang="fa-IR" dir="rtl">
-        <div class="card-header"><div><h2>فارسی</h2><p>Persian · Solar Hijri</p></div><span class="language-tag">fa-IR</span></div>
-        <label for="fa">انتخاب تاریخ</label><input id="fa" name="fa_date">
-        <output id="fa-out" aria-live="polite">YYYY-MM-DD</output>
-      </section>
-      <section class="card" lang="en">
-        <div class="card-header"><div><h2>English</h2><p>English · Gregorian</p></div><span class="language-tag">en</span></div>
-        <label for="en">Choose a date</label><input id="en" name="en_date">
-        <output id="en-out" aria-live="polite">YYYY-MM-DD</output>
-      </section>
+  <a class="skip-link" href="#content">Skip to documentation</a>
+  <header class="site-header">
+    <div class="header-shell">
+      <a class="brand" href="#top" aria-label="Afghan Datepicker home">
+        <img class="brand-mark" src="./assets/fida-mark.webp" width="125" height="77" alt="Fida Rahmani Technology Services emblem">
+        <span class="brand-text"><strong>Afghan Datepicker</strong><small>By Fida Rahmani Technology Services</small></span>
+      </a>
+      <nav class="header-links" aria-label="Header links">
+        <a href="#playground">Live demo</a>
+        <a href="#installation">Documentation</a>
+        <a class="github-link" href="https://github.com/fidatech/afghan-datepicker" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+      </nav>
     </div>
-    <footer class="bottom">
-      <span>Built and maintained by <a href="https://fida.af" target="_blank" rel="noopener noreferrer">Fida Technologies</a></span>
-      <span>Local demo · <code>npm run build</code></span>
-    </footer>
-  </main>
+  </header>
+
+  <section class="hero" id="top" aria-labelledby="hero-heading">
+    <div class="hero-shell">
+      <div>
+        <span class="eyebrow">Free, open-source · TypeScript · MIT</span>
+        <h1 id="hero-heading">The datepicker made for <span>Afghan developers.</span></h1>
+        <p>Solar Hijri and Gregorian calendar inputs, with real Pashto, Dari, Iranian Persian and English localization. Compact, responsive, and ready to integrate into modern applications.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#playground">Try the live demo →</a>
+          <a class="btn btn-secondary" href="#installation">Read the documentation</a>
+        </div>
+        <div class="hero-details">
+          <span class="chip">Complete weekday names</span>
+          <span class="chip">RTL and LTR</span>
+          <span class="chip">Month and year selection</span>
+          <span class="chip">Gregorian ISO output</span>
+        </div>
+      </div>
+      <aside class="hero-panel">
+        <span class="hero-panel-title">Quick start</span>
+        <pre><code>import { AfghanDatepicker } from
+  '@fidatech/afghan-datepicker';
+
+new AfghanDatepicker('#date', {
+  locale: 'ps-AF',
+  calendar: 'jalali'
+});</code></pre>
+        <p>Package name reserved in source, not yet published to npm. Follow the <a href="#installation">local installation steps</a> to use this build.</p>
+      </aside>
+    </div>
+  </section>
+
+  <div class="site-layout">
+    <aside class="sidebar" aria-label="Documentation navigation">
+      <strong>Documentation</strong>
+      <a href="#playground">Interactive playground</a>
+      <a href="#features">Features</a>
+      <a href="#installation">Install and build</a>
+      <a href="#quickstart">Vanilla JS / TypeScript</a>
+      <a href="#localization">Locales and calendars</a>
+      <a href="#options">Options reference</a>
+      <a href="#methods">Methods and events</a>
+      <a href="#forms">HTML and Laravel</a>
+      <a href="#react">React and Vue</a>
+      <a href="#customization">Themes and styling</a>
+      <a href="#utilities">Calendar utilities</a>
+      <a href="#accessibility">Accessibility</a>
+      <a href="#faq">Troubleshooting and FAQ</a>
+      <a href="#contribute">Contribute</a>
+    </aside>
+
+    <main id="content" class="main-content">
+      <section class="doc-section" id="playground">
+        <div class="section-kicker">01 / Interactive</div>
+        <h2>Try the datepicker</h2>
+        <p>Choose a date in any language. Click the month or year in the popup to jump directly to another period. The value underneath remains in <code>YYYY-MM-DD</code> Gregorian ISO format for APIs and databases.</p>
+        <div class="demo-grid">
+          <div class="demo-card" lang="ps" dir="rtl">
+            <h3>پښتو</h3><p class="locale">Pashto · Solar Hijri · ps-AF</p>
+            <label for="ps">نېټه وټاکئ</label><input id="ps" name="ps_date" autocomplete="off">
+            <output id="ps-out" aria-live="polite">No date selected</output>
+          </div>
+          <div class="demo-card" lang="fa-AF" dir="rtl">
+            <h3>دری</h3><p class="locale">Dari · Solar Hijri · fa-AF</p>
+            <label for="dari">انتخاب تاریخ</label><input id="dari" name="dari_date" autocomplete="off">
+            <output id="dari-out" aria-live="polite">No date selected</output>
+          </div>
+          <div class="demo-card" lang="fa-IR" dir="rtl">
+            <h3>فارسی</h3><p class="locale">Persian · Solar Hijri · fa-IR</p>
+            <label for="fa">انتخاب تاریخ</label><input id="fa" name="fa_date" autocomplete="off">
+            <output id="fa-out" aria-live="polite">No date selected</output>
+          </div>
+          <div class="demo-card" lang="en">
+            <h3>English</h3><p class="locale">English · Gregorian · en</p>
+            <label for="en">Choose a date</label><input id="en" name="en_date" autocomplete="off">
+            <output id="en-out" aria-live="polite">No date selected</output>
+          </div>
+        </div>
+        <p style="margin-top:15px">The demo runs entirely in the browser using the local build. No user-entered date is sent to a server.</p>
+      </section>
+
+      <section class="doc-section" id="features">
+        <div class="section-kicker">02 / Capabilities</div>
+        <h2>What the library provides</h2>
+        <div class="feature-list">
+          <div class="feature"><strong>Four distinct locales</strong><p>Pashto, Afghan Dari, Iranian Persian and English, including local month names and complete weekday labels.</p></div>
+          <div class="feature"><strong>Two calendar systems</strong><p>Browse Solar Hijri or Gregorian dates while maintaining Gregorian ISO values for storage.</p></div>
+          <div class="feature"><strong>Fast month/year navigation</strong><p>Select months from a 12-month grid and years from pages of 12, with bounds-aware navigation.</p></div>
+          <div class="feature"><strong>Flexible UI</strong><p>Right-to-left support, light/dark themes, native HTML forms, keyboard navigation and range limits.</p></div>
+        </div>
+      </section>
+
+      <section class="doc-section" id="installation">
+        <div class="section-kicker">03 / Get started</div>
+        <h2>Installation and local development</h2>
+        <div class="notice"><strong>Release status:</strong> this project is available on GitHub as an early implementation. It has not been published to the npm registry yet. Use the source build or a local npm tarball for now.</div>
+        <h3>Clone, install and build</h3>
+        <div class="code-wrap"><div class="code-label">Terminal <button class="copy-button" type="button">Copy</button></div><pre><code>git clone https://github.com/fidatech/afghan-datepicker.git
+cd afghan-datepicker
+npm install
+npm run check
+python3 -m http.server 4173</code></pre></div>
+        <p>Open <code>http://localhost:4173/demo/</code>. Node.js 20+ and Google Chrome/Chromium are required for the complete browser test suite. Run <code>npm run build</code> to compile without browser tests.</p>
+        <h3>Install a local package tarball in another application</h3>
+        <div class="code-wrap"><div class="code-label">Terminal <button class="copy-button" type="button">Copy</button></div><pre><code># Inside afghan-datepicker/
+npm run build
+npm pack
+
+# Inside your application's directory:
+npm install /absolute/path/to/afghan-datepicker/fidatech-afghan-datepicker-0.1.0.tgz</code></pre></div>
+        <p>The tarball includes the compiled JavaScript, TypeScript declarations and CSS. Once an official npm release exists, standard registry installation will be documented here.</p>
+      </section>
+
+      <section class="doc-section" id="quickstart">
+        <div class="section-kicker">04 / Usage</div>
+        <h2>Vanilla JavaScript and TypeScript</h2>
+        <p>Once the package tarball is installed, create a normal input, import the library and import its stylesheet through your bundler.</p>
+        <div class="code-wrap"><div class="code-label">HTML <button class="copy-button" type="button">Copy</button></div><pre><code>&lt;label for="due_date"&gt;Due date&lt;/label&gt;
+&lt;input id="due_date" name="due_date" /&gt;</code></pre></div>
+        <div class="code-wrap"><div class="code-label">TypeScript <button class="copy-button" type="button">Copy</button></div><pre><code>import { AfghanDatepicker } from '@fidatech/afghan-datepicker';
+import '@fidatech/afghan-datepicker/styles.css';
+
+const picker = new AfghanDatepicker('#due_date', {
+  locale: 'ps-AF',
+  calendar: 'jalali',
+  min: '2024-01-01',
+  max: '2030-12-31',
+  theme: 'light',
+  onChange: (iso) =&gt; console.log(iso)
+});
+
+// Returns 'YYYY-MM-DD' or null:
+console.log(picker.getValue());</code></pre></div>
+        <p>For this repository's own demo, <code>demo/index.html</code> imports <code>../dist/index.js</code> directly after a local build.</p>
+      </section>
+
+      <section class="doc-section" id="localization">
+        <div class="section-kicker">05 / Localization</div>
+        <h2>Languages, calendars and date storage</h2>
+        <div class="table-scroll"><table>
+          <thead><tr><th>Locale</th><th>Language</th><th>First Jalali month</th><th>Direction</th></tr></thead>
+          <tbody>
+            <tr><td><code>ps-AF</code></td><td>Pashto</td><td lang="ps" dir="rtl">وری</td><td>RTL</td></tr>
+            <tr><td><code>fa-AF</code></td><td>Afghan Dari</td><td lang="fa-AF" dir="rtl">حمل</td><td>RTL</td></tr>
+            <tr><td><code>fa-IR</code></td><td>Iranian Persian</td><td lang="fa-IR" dir="rtl">فروردین</td><td>RTL</td></tr>
+            <tr><td><code>en</code></td><td>English</td><td>Hamal</td><td>LTR</td></tr>
+          </tbody>
+        </table></div>
+        <p>The default calendar is <code>jalali</code>, but you may set <code>calendar: 'gregorian'</code>. Weekdays start on Saturday by default (<code>weekStartsOn: 6</code>). The Pashto and Dari date headers use full weekday labels without abbreviations.</p>
+        <p><strong>Storage rule:</strong> user-facing dates may use Solar Hijri year/month/day and Persian numerals, while submitted form values always use Western digits in Gregorian <code>YYYY-MM-DD</code>. This library does not convert an ISO date into a timestamp or UTC moment.</p>
+      </section>
+
+      <section class="doc-section" id="options">
+        <div class="section-kicker">06 / Configuration</div>
+        <h2>Datepicker options</h2>
+        <div class="table-scroll"><table>
+          <thead><tr><th>Option</th><th>Type</th><th>Default</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td><code>locale</code></td><td>Locale</td><td><code>ps-AF</code></td><td><code>ps-AF</code>, <code>fa-AF</code>, <code>fa-IR</code>, <code>en</code></td></tr>
+            <tr><td><code>calendar</code></td><td>Calendar</td><td><code>jalali</code></td><td><code>jalali</code> or <code>gregorian</code></td></tr>
+            <tr><td><code>value</code></td><td>string | null</td><td>input date / null</td><td>Initial Gregorian ISO selection</td></tr>
+            <tr><td><code>min</code></td><td>string</td><td>unset</td><td>Inclusive Gregorian ISO minimum</td></tr>
+            <tr><td><code>max</code></td><td>string</td><td>unset</td><td>Inclusive Gregorian ISO maximum</td></tr>
+            <tr><td><code>weekStartsOn</code></td><td>0–6</td><td><code>6</code></td><td>0 = Sunday, 6 = Saturday</td></tr>
+            <tr><td><code>numerals</code></td><td><code>latin</code> | <code>persian</code></td><td>based on locale</td><td>Controls visible digits only</td></tr>
+            <tr><td><code>theme</code></td><td><code>light</code> | <code>dark</code> | <code>auto</code></td><td><code>auto</code></td><td>Auto uses system color preference</td></tr>
+            <tr><td><code>onChange</code></td><td>callback</td><td>unset</td><td>Receives Gregorian ISO date or null</td></tr>
+          </tbody>
+        </table></div>
+      </section>
+
+      <section class="doc-section" id="methods">
+        <div class="section-kicker">07 / JavaScript API</div>
+        <h2>Methods and lifecycle</h2>
+        <div class="code-wrap"><div class="code-label">JavaScript <button class="copy-button" type="button">Copy</button></div><pre><code>picker.getValue();         // '2026-10-19' or null
+picker.setValue('2026-10-19');
+picker.setValue(null);      // Clear the selection
+picker.open();              // Open the calendar
+picker.close();             // Close the calendar
+picker.destroy();           // Remove events and generated DOM
+
+// Callback (only fires when selection changes):
+new AfghanDatepicker('#due_date', {
+  onChange: (iso) =&gt; console.log(iso)
+});</code></pre></div>
+        <p><code>setValue()</code> accepts Gregorian ISO dates only; invalid values or dates outside the configured bounds cause a <code>RangeError</code>. Call <code>destroy()</code> before removing/replacing the associated input in a reactive framework.</p>
+      </section>
+
+      <section class="doc-section" id="forms">
+        <div class="section-kicker">08 / Backend integration</div>
+        <h2>HTML forms and Laravel Blade</h2>
+        <p>When an input has a <code>name</code>, the datepicker creates a hidden form input using that same name. Its value is always Gregorian ISO, making validation and database storage straightforward.</p>
+        <div class="code-wrap"><div class="code-label">resources/views/invoices/create.blade.php <button class="copy-button" type="button">Copy</button></div><pre><code>&lt;form method="POST" action="{{ route('invoices.store') }}"&gt;
+  @csrf
+  &lt;label for="invoice_date"&gt;Invoice date&lt;/label&gt;
+  &lt;input id="invoice_date" name="invoice_date"
+         value="{{ old('invoice_date') }}"&gt;
+  &lt;button type="submit"&gt;Save&lt;/button&gt;
+&lt;/form&gt;</code></pre></div>
+        <div class="code-wrap"><div class="code-label">resources/js/app.ts (with Vite) <button class="copy-button" type="button">Copy</button></div><pre><code>import { AfghanDatepicker } from '@fidatech/afghan-datepicker';
+import '@fidatech/afghan-datepicker/styles.css';
+
+if (document.querySelector('#invoice_date')) {
+  new AfghanDatepicker('#invoice_date', {
+    locale: 'fa-AF',
+    calendar: 'jalali'
+  });
+}</code></pre></div>
+        <div class="code-wrap"><div class="code-label">Laravel validation <button class="copy-button" type="button">Copy</button></div><pre><code>$validated = $request-&gt;validate([
+    'invoice_date' =&gt; ['required', 'date_format:Y-m-d'],
+]);</code></pre></div>
+        <p>Run your app's normal Vite build. Install the library tarball in the Laravel project's npm dependencies beforehand. This example illustrates integration; the repository does not ship a Laravel service provider.</p>
+      </section>
+
+      <section class="doc-section" id="react">
+        <div class="section-kicker">09 / Frameworks</div>
+        <h2>React and Vue integration</h2>
+        <p>The core datepicker works without a framework. React and Vue can use it directly with their component lifecycle hooks; dedicated wrappers are planned, not included in this release.</p>
+        <h3>React (TypeScript)</h3>
+        <div class="code-wrap"><div class="code-label">DateField.tsx <button class="copy-button" type="button">Copy</button></div><pre><code>import { useEffect, useRef } from 'react';
+import { AfghanDatepicker } from '@fidatech/afghan-datepicker';
+import '@fidatech/afghan-datepicker/styles.css';
+
+export function DateField() {
+  const ref = useRef&lt;HTMLInputElement&gt;(null);
+
+  useEffect(() =&gt; {
+    if (!ref.current) return;
+    const picker = new AfghanDatepicker(ref.current, {
+      locale: 'ps-AF'
+    });
+    return () =&gt; picker.destroy();
+  }, []);
+
+  return &lt;input ref={ref} name="date" /&gt;;
+}</code></pre></div>
+        <h3>Vue 3 (Composition API)</h3>
+        <div class="code-wrap"><div class="code-label">DateField.vue <button class="copy-button" type="button">Copy</button></div><pre><code>&lt;script setup lang="ts"&gt;
+import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { AfghanDatepicker } from '@fidatech/afghan-datepicker';
+import '@fidatech/afghan-datepicker/styles.css';
+
+const input = ref&lt;HTMLInputElement | null&gt;(null);
+let picker: AfghanDatepicker | undefined;
+
+onMounted(() =&gt; {
+  if (input.value) picker = new AfghanDatepicker(input.value, {
+    locale: 'fa-AF'
+  });
+});
+onBeforeUnmount(() =&gt; picker?.destroy());
+&lt;/script&gt;
+
+&lt;template&gt;&lt;input ref="input" name="date" /&gt;&lt;/template&gt;</code></pre></div>
+      </section>
+
+      <section class="doc-section" id="customization">
+        <div class="section-kicker">10 / Presentation</div>
+        <h2>Themes and brand customization</h2>
+        <p>Fida's compact demo theme uses its supplied navy-and-orange brand artwork. The reusable component exposes CSS variables, so external developers can apply their own colors without changing the library source.</p>
+        <div class="code-wrap"><div class="code-label">CSS (loaded after the component stylesheet) <button class="copy-button" type="button">Copy</button></div><pre><code>.adp-host {
+  --adp-accent: #0d1e2a;
+  --adp-accent-text: #ffffff;
+  --adp-today: #f77700;
+  --adp-hover: #fff0e2;
+  --adp-border: #dce4e9;
+}</code></pre></div>
+        <p>Use <code>theme: 'light'</code>, <code>'dark'</code> or <code>'auto'</code>. You may override popup width separately with <code>.adp-host .adp-popup</code>, but leave enough room for the full weekday names.</p>
+      </section>
+
+      <section class="doc-section" id="utilities">
+        <div class="section-kicker">11 / Date calculations</div>
+        <h2>Calendar utility functions</h2>
+        <p>The same package exposes strict Gregorian ISO parsing and Jalali conversion helpers for APIs and application logic.</p>
+        <div class="code-wrap"><div class="code-label">TypeScript <button class="copy-button" type="button">Copy</button></div><pre><code>import {
+  toCalendar, fromCalendar, addDays, monthLength,
+  weekday, parseISO, todayISO
+} from '@fidatech/afghan-datepicker';
+
+toCalendar('2016-04-11');
+// { year: 1395, month: 1, day: 23 }
+
+fromCalendar({ year: 1395, month: 1, day: 23 });
+// '2016-04-11'
+
+addDays('2024-02-28', 1); // '2024-02-29'
+monthLength(1395, 12);    // 30 (Jalali leap year)
+weekday('2024-03-20');    // 3 = Wednesday
+parseISO('2026-10-19');   // { year: 2026, month: 10, day: 19 }
+todayISO();               // Current local Gregorian date</code></pre></div>
+        <p>Jalali conversions use the <a href="https://github.com/jalaali/jalaali-js" target="_blank" rel="noopener noreferrer">jalaali-js</a> algorithm, which has a bounded supported year range. Check dates independently when legal or official accuracy is required.</p>
+      </section>
+
+      <section class="doc-section" id="accessibility">
+        <div class="section-kicker">12 / Usability</div>
+        <h2>Keyboard and accessible behavior</h2>
+        <div class="table-scroll"><table>
+          <thead><tr><th>Key</th><th>Behavior</th></tr></thead>
+          <tbody>
+            <tr><td>Enter, Space, Arrow Down</td><td>Opens the datepicker from the input</td></tr>
+            <tr><td>Left / Right arrows</td><td>Moves one day in the direction appropriate to the displayed locale</td></tr>
+            <tr><td>Up / Down arrows</td><td>Moves seven days when a date button has focus</td></tr>
+            <tr><td>Enter on a date</td><td>Selects the focused date</td></tr>
+            <tr><td>Escape</td><td>Closes the popup</td></tr>
+          </tbody>
+        </table></div>
+        <p>The interface uses accessible button labels, date-grid roles and focus indicators. Screen-reader testing across assistive technologies remains a planned improvement; passing browser tests is not a full accessibility certification.</p>
+      </section>
+
+      <section class="doc-section" id="faq">
+        <div class="section-kicker">13 / Help</div>
+        <h2>Troubleshooting and FAQs</h2>
+        <details class="doc-faq"><summary>Can I install this from npm today?</summary><p>Not yet. Build the GitHub repository and use <code>npm pack</code> to install the resulting package tarball into another project. An npm registry release is planned.</p></details>
+        <details class="doc-faq"><summary>Why does the input show a Jalali date but submit Gregorian?</summary><p>The library separates user-facing calendar display from stored date values. It creates a hidden field using the input's original name and sends Gregorian <code>YYYY-MM-DD</code>.</p></details>
+        <details class="doc-faq"><summary>My local demo is showing an older design. What should I do?</summary><p>Run <code>git pull --ff-only</code> and <code>npm run build</code>, then hard-refresh the browser with Cmd+Shift+R on macOS. Start a local HTTP server from the project root.</p></details>
+        <details class="doc-faq"><summary>Chrome can't be found during browser tests.</summary><p>Install Google Chrome or set the <code>CHROME_BIN</code> environment variable to its executable path. Run <code>npm run test</code> for calendar-only tests when Chrome isn't available.</p></details>
+        <details class="doc-faq"><summary>Can I use the component in a commercial project?</summary><p>Yes. The source is MIT licensed. Keep required copyright and license notices, including applicable third-party notices.</p></details>
+      </section>
+
+      <section class="doc-section" id="contribute">
+        <div class="section-kicker">14 / Community</div>
+        <h2>Contribute and report issues</h2>
+        <p>Afghan Datepicker is an open-source project maintained by Fida Rahmani Technology Services. Native-speaker review of Pashto and Dari UI text, browser testing and accessible interaction feedback are particularly welcome.</p>
+        <p>Read the <a href="https://github.com/fidatech/afghan-datepicker/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener noreferrer">contribution guide</a>, report issues on <a href="https://github.com/fidatech/afghan-datepicker/issues" target="_blank" rel="noopener noreferrer">GitHub</a>, and review the <a href="https://github.com/fidatech/afghan-datepicker/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">MIT license</a>.</p>
+        <a href="https://github.com/fidatech/afghan-datepicker" class="btn btn-primary" target="_blank" rel="noopener noreferrer">View source on GitHub ↗</a>
+      </section>
+    </main>
+  </div>
+
+  <footer class="page-footer">
+    <div class="footer-shell">
+      <div>Afghan Datepicker <small>· Open source by Fida Rahmani Technology Services</small></div>
+      <div><a href="https://fida.af" target="_blank" rel="noopener noreferrer">Fida Technologies</a> · <a href="https://github.com/fidatech/afghan-datepicker" target="_blank" rel="noopener noreferrer">GitHub</a></div>
+    </div>
+  </footer>
+
   <script type="module">
     import { AfghanDatepicker } from '../dist/index.js';
-    for (const [id,locale,calendar] of [
-      ['ps','ps-AF','jalali'],['dari','fa-AF','jalali'],
-      ['fa','fa-IR','jalali'],['en','en','gregorian']
+    for (const [id, locale, calendar] of [
+      ['ps', 'ps-AF', 'jalali'],
+      ['dari', 'fa-AF', 'jalali'],
+      ['fa', 'fa-IR', 'jalali'],
+      ['en', 'en', 'gregorian']
     ]) {
-      new AfghanDatepicker('#'+id, {
-        locale,calendar,
-        onChange: iso => {
-          document.getElementById(id+'-out').textContent = iso ?? 'YYYY-MM-DD';
+      new AfghanDatepicker('#' + id, {
+        locale, calendar, theme: 'light',
+        onChange: (iso) => {
+          document.getElementById(id + '-out').textContent = iso ?? 'No date selected';
+        }
+      });
+    }
+    for (const button of document.querySelectorAll('.copy-button')) {
+      button.addEventListener('click', async () => {
+        const code = button.closest('.code-wrap')?.querySelector('code');
+        if (!code || !navigator.clipboard?.writeText) return;
+        try {
+          await navigator.clipboard.writeText(code.textContent ?? '');
+          button.textContent = 'Copied';
+          window.setTimeout(() => { button.textContent = 'Copy'; }, 1500);
+        } catch {
+          button.textContent = 'Copy unavailable';
         }
       });
     }

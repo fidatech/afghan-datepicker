@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Added compact (388 px) navy-and-orange datepicker styling based on the supplied Fida Rahmani Technology Services brand colors and artwork.
+- Turned the browser demo into a fourteen-section developer documentation site with examples for vanilla JavaScript, Laravel, React and Vue.
+- Added browser checks for loading the company logo, documentation sections and compact popup width.
+
+
 - Redesigned popup and demo with responsive layout, SVG navigation chevrons and full weekday names.
 - Updated Pashto and Dari weekdays per community feedback.
 - Added clickable month and year selectors (12-month and 12-year grids).

@@ -6,7 +6,7 @@ import { extname, join, resolve, sep } from 'node:path';
 import { chromium } from 'playwright-core';
 
 const root = process.cwd();
-const mime = {'.html':'text/html','.js':'text/javascript','.css':'text/css','.map':'application/json'};
+const mime = {'.html':'text/html','.js':'text/javascript','.css':'text/css','.map':'application/json','.webp':'image/webp'};
 async function startServer() {
   const server = createServer(async (req, res) => {
     try {
@@ -89,6 +89,15 @@ test('date inputs open functioning calendar popups in Chromium', {timeout:45000}
     const response = await page.goto(url);
     assert.equal(response?.status(), 200, 'Demo HTTP status');
     await page.locator('#ps').waitFor({timeout:5000});
+    // The documentation and supplied Fida artwork should load without errors.
+    const mark = page.locator('.brand-mark');
+    await mark.evaluate((img) => img.decode());
+    assert.ok(await mark.evaluate((img) => img.naturalWidth > 0),
+      'Fida logo is served as a real image');
+    assert.equal(await page.locator('main .doc-section').count(), 14,
+      'Developer documentation contains the complete set of sections');
+    assert.equal(await page.locator('a[href="#installation"]').count() > 0, true);
+
     // Regression: a conflicting author stylesheet can apply display:none after
     // our CSS. The explicitly open popup must still render in that situation.
     await page.addStyleTag({content: '.adp-popup { display: none !important; }'});
@@ -103,6 +112,9 @@ test('date inputs open functioning calendar popups in Chromium', {timeout:45000}
       assert.equal(state.hidden,false, id + ' hidden: ' + JSON.stringify(state)+' / errors: '+ errors.join('\n'));
       assert.notEqual(state.display,'none',id+' not displayed: '+JSON.stringify(state));
       assert.ok(state.height > 100,id+' popup has no height: '+JSON.stringify(state));
+      const size = await popup.boundingBox();
+      assert.ok(size && size.width <= 410, id+' popup should stay compact: '+JSON.stringify(size));
+
       assert.ok(await popup.locator('button.adp-day:not([disabled])').count() >= 28,id+' missing date buttons');
       const fullWeekdays = {
         ps: ['خالي','یونۍ','دونۍ','درېنۍ','څلورنۍ','پنځنۍ','جمعه'],
