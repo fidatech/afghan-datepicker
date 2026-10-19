@@ -58,3 +58,19 @@ jobs:
         run: |
           npm install --no-audit --no-fund
           ./node_modules/.bin/esbuild examples/react-native/AfghanNativeDatepicker.tsx --format=esm --outfile=/tmp/afghan-native.js
+
+  flutter-example:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - name: Create Flutter app and analyze native datepicker
+        run: |
+          flutter create --project-name afghan_datepicker_example "$RUNNER_TEMP/flutter_example"
+          cd "$RUNNER_TEMP/flutter_example"
+          flutter pub add shamsi_date:^1.1.1
+          cp "$GITHUB_WORKSPACE"/examples/flutter/lib/*.dart lib/
+          rm -rf test
+          flutter analyze
