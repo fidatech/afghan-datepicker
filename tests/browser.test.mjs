@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createServer } from 'node:http';
-import { readFile } from 'node:fs/promises';
+import { readFile, access } from 'node:fs/promises';
 import { extname, join, resolve, sep } from 'node:path';
 import { chromium } from 'playwright-core';
 
@@ -27,14 +27,61 @@ async function startServer() {
   return {server, url: 'http://127.0.0.1:' + server.address().port + '/demo/'};
 }
 
+/**
+ * Use an existing system Chrome/Chromium installation instead of requiring a
+ * Playwright-managed browser. CI and developers can override with CHROME_BIN.
+ */
+async function findChrome() {
+  const candidates = [
+    process.env.CHROME_BIN,
+    ...(process.platform === 'darwin' ? [
+      '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+      '/Applications/Chromium.app/Contents/MacOS/Chromium',
+      '/Applications/Google Chrome Canary.app/Contents/MacOS/Google Chrome Canary',
+      ...(process.env.HOME ? [
+        join(process.env.HOME, 'Applications/Google Chrome.app/Contents/MacOS/Google Chrome')
+      ] : [])
+    ] : []),
+    ...(process.platform === 'win32' ? [
+      ...(process.env.PROGRAMFILES ? [
+        join(process.env.PROGRAMFILES, 'Google/Chrome/Application/chrome.exe')
+      ] : []),
+      ...(process.env['PROGRAMFILES(X86)'] ? [
+        join(process.env['PROGRAMFILES(X86)'], 'Google/Chrome/Application/chrome.exe')
+      ] : []),
+      ...(process.env.LOCALAPPDATA ? [
+        join(process.env.LOCALAPPDATA, 'Google/Chrome/Application/chrome.exe')
+      ] : [])
+    ] : []),
+    '/usr/bin/google-chrome',
+    '/usr/bin/google-chrome-stable',
+    '/usr/bin/chromium',
+    '/usr/bin/chromium-browser'
+  ].filter(Boolean);
+
+  for (const candidate of candidates) {
+    try {
+      await access(candidate);
+      return candidate;
+    } catch {
+      // Check the next known installation location.
+    }
+  }
+  throw new Error(
+    'Chrome/Chromium was not found. Install Google Chrome or set CHROME_BIN to ' +
+    'the full executable path, then rerun npm run check.'
+  );
+}
+
 test('date inputs open functioning calendar popups in Chromium', {timeout:45000}, async () => {
   const {server,url} = await startServer();
-  const browser = await chromium.launch({
-    executablePath: process.env.CHROME_BIN || '/usr/bin/google-chrome',
-    headless: true,
-    args: ['--no-sandbox', '--disable-dev-shm-usage']
-  });
+  let browser;
   try {
+    browser = await chromium.launch({
+      executablePath: await findChrome(),
+      headless: true,
+      args: process.platform === 'linux' ? ['--no-sandbox', '--disable-dev-shm-usage'] : []
+    });
     const page = await browser.newPage({viewport:{width:1440,height:900}});
     const errors = [];
     page.on('pageerror', (e) => errors.push(e.stack ?? e.message));
@@ -67,7 +114,13 @@ test('date inputs open functioning calendar popups in Chromium', {timeout:45000}
     assert.equal(await page.locator('input[type="hidden"][name="ps_date"]').inputValue(), chosenISO);
     assert.deepEqual(errors,[],'No browser JS errors');
   } finally {
-    await browser.close();
-    await new Promise((ok) => server.close(ok));
+    try {
+      await browser?.close();
+    } finally {
+      // Always close the HTTP server, including on missing Chrome or launch errors.
+      await new Promise((resolveClose, rejectClose) => server.close((error) =>
+        error ? rejectClose(error) : resolveClose()
+      ));
+    }
   }
 });
