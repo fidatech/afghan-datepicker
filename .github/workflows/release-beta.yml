@@ -1,0 +1,51 @@
+name: Publish public beta release
+
+on:
+  workflow_run:
+    workflows: ["Tests and build"]
+    branches: [main]
+    types: [completed]
+
+permissions:
+  contents: write
+
+jobs:
+  github-beta:
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.head_repository.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-audit --no-fund
+      - run: npm run build
+      - name: Pack browser and npm bundles
+        run: |
+          npm pack --pack-destination "$RUNNER_TEMP"
+          mkdir -p "$RUNNER_TEMP/site/demo/assets" "$RUNNER_TEMP/site/dist" "$RUNNER_TEMP/site/src"
+          cp demo/index.html demo/docs.css "$RUNNER_TEMP/site/demo/"
+          cp demo/assets/* "$RUNNER_TEMP/site/demo/assets/"
+          cp dist/index.js dist/afghan-datepicker.global.js "$RUNNER_TEMP/site/dist/"
+          cp src/datepicker.css "$RUNNER_TEMP/site/src/"
+          cd "$RUNNER_TEMP/site" && zip -qr "$RUNNER_TEMP/afghan-datepicker-docs.zip" .
+      - name: Publish beta once
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if gh release view v0.2.0-beta.1 >/dev/null 2>&1; then
+            echo "Public beta already exists; no duplicate release."
+            exit 0
+          fi
+          gh release create v0.2.0-beta.1 \
+            "$RUNNER_TEMP"/*.tgz \
+            "$RUNNER_TEMP/afghan-datepicker-docs.zip" \
+            --title "Afghan Datepicker v0.2.0-beta.1" \
+            --notes "Public beta: web packages and runnable PHP, Laravel, Django, TypeScript, React and Vue examples. React Native and Flutter remain experimental sample code. Not yet published to npm or pub.dev." \
+            --prerelease \
+            --target "${{ github.event.workflow_run.head_sha }}"

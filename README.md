@@ -1,5 +1,9 @@
 # Afghan Datepicker
 
+**Multi-platform web integrations and native mobile prototype examples.**
+
+Read [platform installation and support](docs/PLATFORMS.md) for the detailed setup guides and verification status.
+
 An open-source, framework-independent TypeScript datepicker for Afghan and Persian-script applications, maintained by **Fida Technologies**.
 
 Pashto (ps-AF) · Dari (fa-AF) · Iranian Persian (fa-IR) · English (en).
@@ -14,7 +18,7 @@ Pashto (ps-AF) · Dari (fa-AF) · Iranian Persian (fa-IR) · English (en).
 - CSS isolated under the .adp-host class. No fonts, tracking, remote scripts or API keys.
 - ESM and CommonJS bundles plus TypeScript declaration files when built.
 
-**Status:** early v0.1.0 implementation. The npm package is not yet published. The repository includes buildable source, tests and a local demo. Please report any language issues or browser bugs.
+**Status:** early v0.2.0 beta implementation. The npm package is not yet published. The repository includes buildable source, tests and a local demo. Please report any language issues or browser bugs.
 
 ## Documentation and interactive playground
 
@@ -77,6 +81,12 @@ picker.destroy();
 The **visible input** displays a localized date. The library creates a hidden input with the original field name and a Gregorian ISO value. Submitting the form sends invoice_date=2026-10-19; empty selection submits an empty string.
 
 The datepicker takes ownership of the input's value while active, and its destroy() method restores the original name and readonly state. The original display value is not restored by destroy().
+
+## Ready-to-run platform examples
+
+This repository includes local projects for [Core PHP](examples/php), [Laravel](examples/laravel), [Django / Python](examples/django), [TypeScript](examples/typescript), [React](examples/react), and [Vue 3](examples/vue). [React Native](examples/react-native) and [Flutter](examples/flutter) are separate native prototypes, not production-tested mobile packages.
+
+The build includes dist/afghan-datepicker.global.js, which can be loaded with a browser script tag, and a DOM-free package core entry point for Node.js and React Native. See [PLATFORMS.md](docs/PLATFORMS.md).
 
 ## Supported options
 

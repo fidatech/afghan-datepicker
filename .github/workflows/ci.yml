@@ -18,3 +18,59 @@ jobs:
           node-version: 22
       - run: npm install --no-audit --no-fund
       - run: npm run check
+      - run: npm pack --dry-run
+
+  web-frameworks:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        example: [typescript, react, vue]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-audit --no-fund && npm run build
+      - name: Install and compile project
+        run: cd examples/${{ matrix.example }} && npm install --no-audit --no-fund && npm run build
+
+  backend-examples:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate PHP syntax
+        run: |
+          php -l examples/php/index.php
+          php -l examples/laravel/routes/web.php
+      - name: Validate Django sample
+        run: |
+          python -m pip install -r examples/django/requirements.txt
+          python examples/django/manage.py check
+          python -m compileall -q examples/django/core
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: React Native TSX transpilation check (not device verification)
+        run: |
+          npm install --no-audit --no-fund
+          ./node_modules/.bin/esbuild examples/react-native/AfghanNativeDatepicker.tsx --format=esm --outfile=/tmp/afghan-native.js
+
+  flutter-example:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - name: Create Flutter app and analyze native datepicker
+        run: |
+          flutter create --project-name afghan_datepicker_example "$RUNNER_TEMP/flutter_example"
+          cd "$RUNNER_TEMP/flutter_example"
+          flutter pub add shamsi_date:^1.1.1
+          cp "$GITHUB_WORKSPACE"/examples/flutter/lib/*.dart lib/
+          rm -rf test
+          flutter analyze

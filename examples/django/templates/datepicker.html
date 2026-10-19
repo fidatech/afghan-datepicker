@@ -1,0 +1,27 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Afghan Datepicker · Django</title>
+  <link rel="stylesheet" href="{% static 'vendor/datepicker.css' %}">
+  <style>body{font:15px system-ui;max-width:460px;margin:60px auto;padding:16px}</style>
+</head>
+<body>
+  <h1>Django · Afghan Datepicker</h1>
+  {% if message %}<p role="status">{{ message }}</p>{% endif %}
+  <form method="POST">
+    {% csrf_token %}
+    <label for="invoice_date">Invoice date</label>
+    <input id="invoice_date" name="invoice_date" value="{{ date_value }}">
+    <button type="submit">Save</button>
+  </form>
+  <script src="{% static 'vendor/afghan-datepicker.global.js' %}"></script>
+  <script>
+    new window.AfghanDatepicker('#invoice_date', {
+      locale: 'ps-AF', calendar: 'jalali', theme: 'light'
+    });
+  </script>
+</body>
+</html>

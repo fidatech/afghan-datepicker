@@ -68,6 +68,7 @@ new AfghanDatepicker('#date', {
       <a href="#options">Options reference</a>
       <a href="#methods">Methods and events</a>
       <a href="#forms">HTML and Laravel</a>
+      <a href="#platforms">Platform guides</a>
       <a href="#react">React and Vue</a>
       <a href="#customization">Themes and styling</a>
       <a href="#utilities">Calendar utilities</a>
@@ -134,7 +135,7 @@ npm run build
 npm pack
 
 # Inside your application's directory:
-npm install /absolute/path/to/afghan-datepicker/fidatech-afghan-datepicker-0.1.0.tgz</code></pre></div>
+npm install /absolute/path/to/afghan-datepicker/fidatech-afghan-datepicker-0.2.0-beta.1.tgz</code></pre></div>
         <p>The tarball includes the compiled JavaScript, TypeScript declarations and CSS. Once an official npm release exists, standard registry installation will be documented here.</p>
       </section>
 
@@ -237,6 +238,45 @@ if (document.querySelector('#invoice_date')) {
     'invoice_date' =&gt; ['required', 'date_format:Y-m-d'],
 ]);</code></pre></div>
         <p>Run your app's normal Vite build. Install the library tarball in the Laravel project's npm dependencies beforehand. This example illustrates integration; the repository does not ship a Laravel service provider.</p>
+      </section>
+
+      <section class="doc-section" id="platforms">
+        <div class="section-kicker">Platform support</div>
+        <h2>Use it with your technology</h2>
+        <p>The same compiled web component works in PHP, Python/Django, Laravel, TypeScript, React and Vue applications. React Native and Flutter use separate native sample components because the web datepicker needs browser APIs.</p>
+        <div class="feature-list">
+          <div class="feature"><strong>Laravel + Blade</strong><p>Copy the standalone browser assets into public/vendor and use the provided Blade and validation route. <a href="https://github.com/fidatech/afghan-datepicker/tree/main/examples/laravel">Laravel source →</a></p></div>
+          <div class="feature"><strong>PHP without a framework</strong><p>Load one JavaScript bundle and one stylesheet. The complete POST form validates Gregorian YYYY-MM-DD. <a href="https://github.com/fidatech/afghan-datepicker/tree/main/examples/php">Core PHP source →</a></p></div>
+          <div class="feature"><strong>Django + Python</strong><p>Use Django staticfiles and a template; validate the posted ISO date with Python datetime. <a href="https://github.com/fidatech/afghan-datepicker/tree/main/examples/django">Django project →</a></p></div>
+          <div class="feature"><strong>TypeScript</strong><p>A standalone Vite project with typed package imports and event handling. <a href="https://github.com/fidatech/afghan-datepicker/tree/main/examples/typescript">TypeScript project →</a></p></div>
+          <div class="feature"><strong>React + Vite</strong><p>Initialize in useEffect and destroy on cleanup; use React state for the Gregorian ISO output. <a href="https://github.com/fidatech/afghan-datepicker/tree/main/examples/react">React project →</a></p></div>
+          <div class="feature"><strong>Vue 3 + Vite</strong><p>Initialize in onMounted and clean up in onBeforeUnmount. <a href="https://github.com/fidatech/afghan-datepicker/tree/main/examples/vue">Vue project →</a></p></div>
+          <div class="feature"><strong>React Native / Expo · prototype</strong><p>Separate native Modal and Pressable interface using the JavaScript calendar-only module. Device testing is still pending. <a href="https://github.com/fidatech/afghan-datepicker/tree/main/examples/react-native">Native sample →</a></p></div>
+          <div class="feature"><strong>Flutter / Dart · prototype</strong><p>Separate Flutter calendar widgets using the independent shamsi_date package. Not published on pub.dev. <a href="https://github.com/fidatech/afghan-datepicker/tree/main/examples/flutter">Flutter sample →</a></p></div>
+        </div>
+        <h3>JavaScript and web frameworks</h3>
+        <p>Build the package locally, then install its tarball into an existing app. The included TypeScript, React and Vue projects already reference this repository as a local package.</p>
+        <div class="code-wrap"><div class="code-label">Terminal <button class="copy-button" type="button">Copy</button></div><pre><code>npm install
+npm run build
+npm pack
+
+# Start one of the complete Vite examples:
+cd examples/react
+npm install
+npm run dev</code></pre></div>
+        <h3>PHP, Python, Django and Laravel</h3>
+        <p>These server languages do not require a JavaScript runtime in production. Generate the browser assets once and copy them into the project's public/static folder. The backend receives Gregorian ISO dates.</p>
+        <div class="code-wrap"><div class="code-label">Standalone HTML <button class="copy-button" type="button">Copy</button></div><pre><code>&lt;link rel="stylesheet" href="/assets/datepicker.css"&gt;
+&lt;input id="date" name="date"&gt;
+&lt;script src="/assets/afghan-datepicker.global.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+  new window.AfghanDatepicker('#date', {
+    locale: 'ps-AF', calendar: 'jalali'
+  });
+&lt;/script&gt;</code></pre></div>
+        <h3>React Native and Flutter</h3>
+        <p>The browser component cannot run directly inside a native mobile view. The repository includes native prototypes with platform-specific setup instructions. These are <strong>not yet supported production packages</strong>, and additional device, accessibility and release testing is needed.</p>
+        <p>The <a href="https://github.com/fidatech/afghan-datepicker/blob/main/docs/PLATFORMS.md" target="_blank" rel="noopener noreferrer">full platform installation guide</a> provides setup commands, integration notes and the current verification status for each platform.</p>
       </section>
 
       <section class="doc-section" id="react">
