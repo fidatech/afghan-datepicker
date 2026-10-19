@@ -31,7 +31,10 @@
   border:1px solid var(--adp-border);border-radius:14px;background:var(--adp-bg);
   box-shadow:var(--adp-shadow);color:var(--adp-text);text-align:start
 }
-.adp-popup[hidden] {display:none!important}
+/* Explicit display states protect against competing CSS that hides popups.
+   Attribute specificity is intentional: a hidden dialog must stay hidden. */
+.adp-host .adp-popup[hidden] {display:none!important}
+.adp-host .adp-popup:not([hidden]) {display:block!important}
 .adp-header,.adp-footer {display:flex;align-items:center;justify-content:space-between;gap:8px}
 .adp-header {margin-bottom:12px}
 .adp-title {font-size:15px;font-weight:700;text-align:center}

@@ -89,6 +89,9 @@ test('date inputs open functioning calendar popups in Chromium', {timeout:45000}
     const response = await page.goto(url);
     assert.equal(response?.status(), 200, 'Demo HTTP status');
     await page.locator('#ps').waitFor({timeout:5000});
+    // Regression: a conflicting author stylesheet can apply display:none after
+    // our CSS. The explicitly open popup must still render in that situation.
+    await page.addStyleTag({content: '.adp-popup { display: none !important; }'});
     for (const id of ['ps','dari','fa','en']) {
       await page.locator('#' + id).click();
       const host = page.locator('#' + id).locator('xpath=..');
@@ -102,6 +105,8 @@ test('date inputs open functioning calendar popups in Chromium', {timeout:45000}
       assert.ok(state.height > 100,id+' popup has no height: '+JSON.stringify(state));
       assert.ok(await popup.locator('button.adp-day:not([disabled])').count() >= 28,id+' missing date buttons');
       await page.keyboard.press('Escape');
+      assert.equal(await popup.evaluate((p) => getComputedStyle(p).display), 'none',
+        id + ' popup is hidden again after Escape');
     }
     await page.locator('#ps').focus();
     const psPopup = page.locator('#ps').locator('xpath=..').locator('.adp-popup');
