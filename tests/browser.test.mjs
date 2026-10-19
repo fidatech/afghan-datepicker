@@ -11,6 +11,7 @@ async function startServer() {
   const server = createServer(async (req, res) => {
     try {
       let path = new URL(req.url ?? '/', 'http://127.0.0.1').pathname;
+      if (path === '/favicon.ico') { res.writeHead(204).end(); return; }
       if (path.endsWith('/')) path += 'index.html';
       const file = resolve(join(root, decodeURIComponent(path)));
       if (!file.startsWith(root + sep) && file !== root) {
@@ -55,6 +56,15 @@ test('date inputs open functioning calendar popups in Chromium', {timeout:45000}
       assert.ok(await popup.locator('button.adp-day:not([disabled])').count() >= 28,id+' missing date buttons');
       await page.keyboard.press('Escape');
     }
+    await page.locator('#ps').focus();
+    const psPopup = page.locator('#ps').locator('xpath=..').locator('.adp-popup');
+    assert.equal(await psPopup.evaluate((p) => p.hidden), false, 'Keyboard focus opens the popup');
+    const firstDay = psPopup.locator('button.adp-day:not([disabled])').first();
+    const chosenISO = await firstDay.getAttribute('data-iso');
+    await firstDay.click();
+    assert.equal(await psPopup.evaluate((p) => p.hidden), true, 'Selection closes the popup');
+    assert.equal(await page.locator('#ps').getAttribute('data-iso'), chosenISO);
+    assert.equal(await page.locator('input[type="hidden"][name="ps_date"]').inputValue(), chosenISO);
     assert.deepEqual(errors,[],'No browser JS errors');
   } finally {
     await browser.close();
