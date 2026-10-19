@@ -17,7 +17,7 @@ Pashto (ps-AF) · Dari (fa-AF) · Iranian Persian (fa-IR) · English (en).
 
 ## Start locally
 
-Requires Node.js 20 or newer.
+Requires Node.js 20 or newer. The browser test in `npm run check` uses an installed Google Chrome/Chromium browser. On macOS, Chrome is normally detected in `/Applications/Google Chrome.app`; on Linux and Windows, common installation locations are detected automatically. Set `CHROME_BIN` to the absolute path of the browser executable for a nonstandard installation.
 
 ~~~bash
 git clone https://github.com/fidatech/afghan-datepicker.git
