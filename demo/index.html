@@ -434,22 +434,9 @@ todayISO();               // Current local Gregorian date</code></pre></div>
       }
     }
 
-    let navigatingTo = null;
     function updateActiveSection() {
       if (!sections.length) return;
       const readingLine = 160;
-      // During smooth anchor scrolling, keep the clicked tab highlighted.
-      // Scrolling can begin before the browser reaches the selected section.
-      if (navigatingTo) {
-        const top = navigatingTo.section.getBoundingClientRect().top;
-        const atEnd = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 3;
-        if ((top > -24 && top <= readingLine) || atEnd) {
-          navigatingTo = null;
-        } else {
-          markActive(navigatingTo.link);
-          return;
-        }
-      }
       let active = sections[0].link;
       for (const item of sections) {
         if (item.section.getBoundingClientRect().top <= readingLine) {
@@ -473,25 +460,20 @@ todayISO();               // Current local Gregorian date</code></pre></div>
         updateActiveSection();
       });
     }, { passive: true });
-    window.addEventListener('hashchange', () => {
-      const target = sections.find(({ section }) => '#' + section.id === window.location.hash);
-      if (target) {
-        navigatingTo = target;
-        markActive(target.link);
-      } else {
-        navigatingTo = null;
-        updateActiveSection();
-      }
-    });
+
+    // Clicking a tab jumps to that section immediately, keeping the selected
+    // state stable instead of competing with an in-progress smooth scroll.
     for (const item of sections) {
-      item.link.addEventListener('click', () => {
-        navigatingTo = item;
+      item.link.addEventListener('click', (event) => {
+        event.preventDefault();
+        const hash = '#' + item.section.id;
+        if (window.location.hash !== hash) history.pushState(null, '', hash);
+        item.section.scrollIntoView({ block: 'start', behavior: 'instant' });
         markActive(item.link);
       });
     }
-    // User-initiated scrolling takes priority over a previous anchor click.
-    window.addEventListener('wheel', () => { navigatingTo = null; }, { passive: true });
-    window.addEventListener('touchstart', () => { navigatingTo = null; }, { passive: true });
+    window.addEventListener('hashchange', () => requestAnimationFrame(updateActiveSection));
+    window.addEventListener('popstate', () => requestAnimationFrame(updateActiveSection));
     updateActiveSection();
     requestAnimationFrame(updateActiveSection);
 
