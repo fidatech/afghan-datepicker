@@ -44,6 +44,7 @@ export class AfghanDatepicker {
   private max?: string;
   private onChange?: (iso: string | null) => void;
   private disposed = false;
+  private suppressFocusOpen = false;
 
   constructor(target: string | HTMLInputElement, options: DatepickerOptions = {}) {
     const input = typeof target === 'string' ? document.querySelector(target) : target;
@@ -116,6 +117,7 @@ export class AfghanDatepicker {
     this.refreshInput();
 
     input.addEventListener('click', this.open);
+    input.addEventListener('focus', this.onFocus);
     input.addEventListener('keydown', this.onInputKey);
     this.popup.addEventListener('keydown', this.onPopupKey);
     document.addEventListener('pointerdown', this.onOutside);
@@ -159,6 +161,7 @@ export class AfghanDatepicker {
     this.close();
     this.disposed = true;
     this.input.removeEventListener('click', this.open);
+    this.input.removeEventListener('focus', this.onFocus);
     this.input.removeEventListener('keydown', this.onInputKey);
     this.popup.removeEventListener('keydown', this.onPopupKey);
     document.removeEventListener('pointerdown', this.onOutside);
@@ -250,7 +253,7 @@ export class AfghanDatepicker {
       const cell = this.button(digits(day, this.numerals), 'adp-day', () => {
         this.setValue(iso);
         this.close();
-        this.input.focus();
+        this.returnFocus();
       });
       cell.dataset.iso = iso;
       cell.setAttribute('aria-label', digits(day, this.numerals) + ' ' +
@@ -272,13 +275,13 @@ export class AfghanDatepicker {
     const todayButton = this.button(dictionary.today, 'adp-action', () => {
       this.setValue(todayISO());
       this.close();
-      this.input.focus();
+      this.returnFocus();
     });
     todayButton.disabled = !this.allowed(today);
     const clearButton = this.button(dictionary.clear, 'adp-action', () => {
       this.setValue(null);
       this.close();
-      this.input.focus();
+      this.returnFocus();
     });
     footer.append(todayButton, clearButton);
     this.popup.append(footer);
@@ -293,6 +296,16 @@ export class AfghanDatepicker {
     } catch {
       // Calendar conversion is defined only for a bounded range of years.
     }
+  }
+
+  private onFocus = (): void => {
+    if (!this.suppressFocusOpen) this.open();
+  };
+
+  private returnFocus(): void {
+    this.suppressFocusOpen = true;
+    this.input.focus();
+    this.suppressFocusOpen = false;
   }
 
   private onOutside = (event: PointerEvent): void => {
@@ -314,7 +327,7 @@ export class AfghanDatepicker {
     if (event.key === 'Escape') {
       event.preventDefault();
       this.close();
-      this.input.focus();
+      this.returnFocus();
       return;
     }
     if (!(event.target instanceof HTMLButtonElement) || !event.target.dataset.iso) return;
