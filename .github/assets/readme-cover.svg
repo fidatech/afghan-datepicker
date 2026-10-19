@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="350" viewBox="0 0 1200 350" role="img" aria-labelledby="title description">
+  <title id="title">Afghan Datepicker — dates that speak your language</title>
+  <desc id="description">Navy and orange branded calendar illustration with a Gregorian ISO date field</desc>
+  <defs>
+    <linearGradient id="navy" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0D1E2A"/><stop offset="1" stop-color="#173C53"/></linearGradient>
+    <linearGradient id="orange" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#FF951F"/><stop offset="1" stop-color="#F65D00"/></linearGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="170%"><feDropShadow dx="0" dy="14" stdDeviation="15" flood-color="#050F16" flood-opacity=".28"/></filter>
+  </defs>
+  <rect width="1200" height="350" rx="18" fill="url(#navy)"/>
+  <g opacity=".11" stroke="#91BACF" fill="none">
+    <path d="M0 304H1200M0 268H1200M0 232H1200M0 196H1200M0 160H1200M0 124H1200M0 88H1200M0 52H1200"/>
+    <path d="M72 0V350M144 0V350M216 0V350M288 0V350M360 0V350M432 0V350M504 0V350M576 0V350M648 0V350M720 0V350M792 0V350M864 0V350M936 0V350M1008 0V350M1080 0V350M1152 0V350"/>
+  </g>
+  <circle cx="1125" cy="35" r="186" fill="#F77700" opacity=".09"/>
+  <circle cx="1130" cy="330" r="220" fill="#D7E9F4" opacity=".06"/>
+  <rect x="65" y="43" width="183" height="30" rx="15" fill="#F77700" fill-opacity=".14" stroke="#FF9839" stroke-opacity=".48"/>
+  <circle cx="83" cy="58" r="4" fill="#F77700"/>
+  <text x="100" y="63" font-family="Arial,sans-serif" font-size="12" font-weight="700" letter-spacing="1.4" fill="#FFC38C">OPEN SOURCE · MIT</text>
+  <text x="65" y="145" font-family="Arial,sans-serif" font-size="51" letter-spacing="-1.2" font-weight="700" fill="#FFFFFF">Dates that speak</text>
+  <text x="65" y="202" font-family="Arial,sans-serif" font-size="51" letter-spacing="-1.2" font-weight="700" fill="#FF8B20">your language.</text>
+  <text x="67" y="248" font-family="Arial,sans-serif" font-size="17" fill="#BDD0DC">Pashto  ·  Dari  ·  Persian  ·  English</text>
+  <path d="M66 279H590" stroke="#436274"/>
+  <text x="67" y="310" font-family="Arial,sans-serif" font-size="14" fill="#D8E5EB">Solar Hijri + Gregorian</text>
+  <circle cx="279" cy="305" r="3" fill="#F77700"/>
+  <text x="291" y="310" font-family="Arial,sans-serif" font-size="14" fill="#D8E5EB">RTL / LTR</text>
+  <circle cx="387" cy="305" r="3" fill="#F77700"/>
+  <text x="401" y="310" font-family="Arial,sans-serif" font-size="14" fill="#D8E5EB">ISO dates</text>
+  <g filter="url(#shadow)">
+    <rect x="790" y="30" width="340" height="286" rx="18" fill="#FFFFFF"/>
+    <path d="M808 30h304a18 18 0 0 1 18 18v-10H790v10a18 18 0 0 1 18-18" fill="url(#orange)"/>
+    <rect x="811" y="53" width="76" height="26" rx="7" fill="#FFF0E4"/>
+    <text x="828" y="71" font-family="Arial,sans-serif" font-size="11" font-weight="700" fill="#AE4C00">JALALI</text>
+    <text x="812" y="108" font-family="Arial,sans-serif" font-size="18" font-weight="700" fill="#173144">Choose a date</text>
+    <path d="M810 123H1111" stroke="#E6EDF1"/>
+    <g fill="#E9F0F4">
+      <rect x="812" y="141" width="34" height="25" rx="6"/><rect x="856" y="141" width="34" height="25" rx="6"/><rect x="900" y="141" width="34" height="25" rx="6"/><rect x="944" y="141" width="34" height="25" rx="6"/><rect x="988" y="141" width="34" height="25" rx="6"/><rect x="1032" y="141" width="34" height="25" rx="6"/><rect x="1076" y="141" width="34" height="25" rx="6"/>
+    </g>
+    <g fill="#F3F6F8">
+      <rect x="812" y="178" width="34" height="31" rx="7"/><rect x="856" y="178" width="34" height="31" rx="7"/><rect x="900" y="178" width="34" height="31" rx="7"/><rect x="944" y="178" width="34" height="31" rx="7"/><rect x="988" y="178" width="34" height="31" rx="7"/><rect x="1032" y="178" width="34" height="31" rx="7"/><rect x="1076" y="178" width="34" height="31" rx="7"/>
+      <rect x="812" y="217" width="34" height="31" rx="7"/><rect x="856" y="217" width="34" height="31" rx="7"/><rect x="900" y="217" width="34" height="31" rx="7"/><rect x="988" y="217" width="34" height="31" rx="7"/><rect x="1032" y="217" width="34" height="31" rx="7"/><rect x="1076" y="217" width="34" height="31" rx="7"/>
+    </g>
+    <rect x="944" y="217" width="34" height="31" rx="7" fill="url(#orange)"/>
+    <text x="961" y="238" font-family="Arial,sans-serif" text-anchor="middle" font-size="14" font-weight="700" fill="#FFFFFF">18</text>
+    <rect x="812" y="266" width="298" height="30" rx="8" fill="#E9F0F4"/>
+    <text x="826" y="286" font-family="Arial,sans-serif" font-size="12" font-weight="700" fill="#476071">Gregorian output</text>
+    <text x="1097" y="286" text-anchor="end" font-family="monospace" font-size="12" fill="#0D1E2A">YYYY-MM-DD</text>
+  </g>
+</svg>

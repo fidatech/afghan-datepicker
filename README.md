@@ -1,135 +1,243 @@
+<div align="center">
+
+<img src="demo/assets/fida-mark.webp" width="105" alt="Fida Rahmani Technology Services logo">
+
 # Afghan Datepicker
 
-**Multi-platform web integrations and native mobile prototype examples.**
+**A multilingual Solar Hijri (Jalali) and Gregorian datepicker for developers in Afghanistan and beyond.**
 
-Read [platform installation and support](docs/PLATFORMS.md) for the detailed setup guides and verification status.
+پښتو &nbsp;·&nbsp; دری &nbsp;·&nbsp; فارسی &nbsp;·&nbsp; English
 
-An open-source, framework-independent TypeScript datepicker for Afghan and Persian-script applications, maintained by **Fida Technologies**.
+[![Build and tests](https://github.com/fidatech/afghan-datepicker/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/fidatech/afghan-datepicker/actions/workflows/ci.yml)
+[![GitHub beta](https://img.shields.io/badge/Release-v0.2.0--beta.1-F77700?style=flat&labelColor=0D1E2A)](https://github.com/fidatech/afghan-datepicker/releases/tag/v0.2.0-beta.1)
+[![MIT License](https://img.shields.io/badge/License-MIT-0D1E2A?style=flat&labelColor=F77700)](LICENSE)
+[![TypeScript](https://img.shields.io/badge/TypeScript-Ready-0D1E2A?style=flat&labelColor=F77700)](examples/typescript)
 
-Pashto (ps-AF) · Dari (fa-AF) · Iranian Persian (fa-IR) · English (en).
+</div>
 
-## Features
+![Navy and orange illustration showing a Jalali calendar and Gregorian ISO output](.github/assets/readme-cover.svg)
 
-- Solar Hijri/Jalali and Gregorian views with separate Afghan and Iranian month names.
-- Gregorian YYYY-MM-DD storage/output, suitable for backend APIs, Laravel and database fields.
-- Redesigned responsive RTL/LTR popup with complete weekday names (no abbreviations), localized digits, and keyboard navigation.
-- Clickable month and year headers: choose a month or jump between 12-year pages; chevron icons match the requested RTL layout.
-- Inclusive min/max dates, Today and Clear controls, light/dark/automatic themes.
-- CSS isolated under the .adp-host class. No fonts, tracking, remote scripts or API keys.
-- ESM and CommonJS bundles plus TypeScript declaration files when built.
+<div align="center">
 
-**Status:** early v0.2.0 beta implementation. The npm package is not yet published. The repository includes buildable source, tests and a local demo. Please report any language issues or browser bugs.
+**[Get started](#quick-start)** &nbsp;·&nbsp; **[Platforms](#frameworks--platforms)** &nbsp;·&nbsp; **[API reference](#api-at-a-glance)** &nbsp;·&nbsp; **[Download beta](https://github.com/fidatech/afghan-datepicker/releases/tag/v0.2.0-beta.1)**
 
-## Documentation and interactive playground
+</div>
 
-The GitHub source includes a [full developer documentation site](demo/index.html) with an interactive datepicker demo, installation instructions, Laravel/React/Vue examples, configuration tables, methods, calendar utilities, keyboard support, styling and troubleshooting. Build and run the project locally to view it at http://localhost:4173/demo/.
+> [!NOTE]
+> **Public beta.** The source and compiled archives are available on GitHub. Publication to the npm registry has **not been confirmed**. The React Native and Flutter integrations are experimental native examples, not production-certified SDKs.
 
-The demo uses the supplied Fida Rahmani Technology Services navy-and-orange logo mark, with brand colors separate from the package's customizable CSS variables. The datepicker is intentionally compact (approximately 388 px maximum on desktop) while keeping complete weekday names.
+## Dates your users understand
 
-## Start locally
+Afghan Datepicker displays dates in your users' language while returning a standard Gregorian `YYYY-MM-DD` value for APIs, databases and HTML forms.
 
-Requires Node.js 20 or newer. The browser test in `npm run check` uses an installed Google Chrome/Chromium browser. On macOS, Chrome is normally detected in `/Applications/Google Chrome.app`; on Linux and Windows, common installation locations are detected automatically. Set `CHROME_BIN` to the absolute path of the browser executable for a nonstandard installation.
+| | What you get |
+| :--- | :--- |
+| **Four locales** | Pashto (`ps-AF`), Afghan Dari (`fa-AF`), Iranian Persian (`fa-IR`) and English (`en`) |
+| **Two calendars** | Solar Hijri (Jalali) and Gregorian |
+| **Readable UI** | Full weekday names, localized digits, RTL/LTR layout and a compact responsive popup |
+| **Fast date selection** | Clickable month and year grids, keyboard controls, Today and Clear |
+| **Backend-friendly** | Gregorian ISO output, inclusive date limits and native HTML form integration |
+| **Customizable styling** | Fida navy-and-orange demo, light/dark/auto themes and CSS variables |
+
+### Localized calendar display
+
+| Language | Locale | First Jalali month | Direction |
+| :--- | :--- | :--- | :--- |
+| پښتو · Pashto | `ps-AF` | وری | RTL |
+| دری · Dari | `fa-AF` | حمل | RTL |
+| فارسی · Persian | `fa-IR` | فروردین | RTL |
+| English | `en` | Hamal | LTR |
+
+Full weekday labels are retained, without automatic abbreviations.
+
+## Quick start
+
+### Option A · Download a public beta build
+
+Download the verified [**v0.2.0-beta.1 GitHub release**](https://github.com/fidatech/afghan-datepicker/releases/tag/v0.2.0-beta.1).
+
+For npm-based projects, download the `fidatech-afghan-datepicker-0.2.0-beta.1.tgz` file and install it locally:
+
+~~~bash
+npm install ./fidatech-afghan-datepicker-0.2.0-beta.1.tgz
+~~~
+
+For plain HTML, PHP, Laravel Blade or Django templates, download the [documentation/assets ZIP](https://github.com/fidatech/afghan-datepicker/releases/download/v0.2.0-beta.1/afghan-datepicker-docs.zip), then copy `dist/afghan-datepicker.global.js` and `src/datepicker.css` into your application's public/static assets.
+
+### Option B · Clone and build
+
+Requires Node.js 20 or newer.
 
 ~~~bash
 git clone https://github.com/fidatech/afghan-datepicker.git
 cd afghan-datepicker
 npm install
-npm run check
-~~~
-
-To view the interactive browser demo:
-
-~~~bash
 npm run build
 python3 -m http.server 4173
 ~~~
 
-Visit http://localhost:4173/demo/ in your browser. Run a local HTTP server instead of opening the demo via file://.
+Open **http://localhost:4173/demo/** for the four-language interactive playground and developer documentation.
 
-## Basic usage
+Run `npm run check` to execute the full test suite. Chrome/Chromium must be installed for the browser tests; configure `CHROME_BIN` if your browser executable is in a nonstandard location.
 
-After building or once the package is published, import the component and stylesheet from the project or installed package. For local demo usage, see demo/index.html.
+## Integration examples
+
+### JavaScript / TypeScript
+
+After installing the compiled package archive:
 
 ~~~html
-<form method="post">
-  <label for="invoice-date">Invoice date</label>
-  <input id="invoice-date" name="invoice_date">
-  <button type="submit">Submit</button>
-</form>
+<label for="invoice_date">Invoice date</label>
+<input id="invoice_date" name="invoice_date">
 ~~~
 
 ~~~ts
 import { AfghanDatepicker } from '@fidatech/afghan-datepicker';
 import '@fidatech/afghan-datepicker/styles.css';
 
-const picker = new AfghanDatepicker('#invoice-date', {
+const picker = new AfghanDatepicker('#invoice_date', {
   locale: 'ps-AF',
   calendar: 'jalali',
-  min: '2024-01-01',
-  max: '2030-12-31',
   theme: 'light',
+  min: '2024-01-01',
   onChange: (iso) => console.log(iso) // Gregorian YYYY-MM-DD or null
 });
+~~~
 
-picker.getValue();
+The visible input displays a localized date. The component creates a hidden form input under the original field name, containing a Gregorian ISO date for submission.
+
+### HTML / Core PHP / Laravel / Django
+
+Copy the standalone JS and CSS into your web application's static directory:
+
+~~~html
+<link rel="stylesheet" href="/assets/datepicker.css">
+<input id="due_date" name="due_date">
+
+<script src="/assets/afghan-datepicker.global.js"></script>
+<script>
+  new window.AfghanDatepicker('#due_date', {
+    locale: 'fa-AF',
+    calendar: 'jalali'
+  });
+</script>
+~~~
+
+Your PHP or Python backend validates the submitted `YYYY-MM-DD` date. The compiled browser component does not require a Node.js server at runtime.
+
+## Frameworks & platforms
+
+**Web applications use the same datepicker. Native mobile examples have their own UIs.**
+
+| Platform | Example / guide | Verification |
+| :--- | :--- | :--- |
+| TypeScript / Vite | [Complete project](examples/typescript) | Automated build |
+| React | [React + Vite](examples/react) | Automated build |
+| Vue 3 | [Vue + Vite](examples/vue) | Automated build |
+| Laravel | [Blade + ISO validation](examples/laravel) | PHP syntax; end-to-end Laravel test pending |
+| Core PHP | [Standalone form](examples/php) | PHP syntax |
+| Django / Python | [Django project](examples/django) | Django checks |
+| Node.js | [DOM-free calendar core](src/core.ts) | Package tests |
+| React Native / Expo | [Native prototype](examples/react-native) | Source transpilation; device tests pending |
+| Flutter / Dart | [Native prototype](examples/flutter) | Flutter analyzer; device tests pending |
+
+**[Full installation and platform support guide →](docs/PLATFORMS.md)**
+
+Other server-rendered frameworks can serve the standalone browser bundle, but individual support for every framework has not been verified.
+
+## API at a glance
+
+### Configuration
+
+| Option | Default | Description |
+| :--- | :--- | :--- |
+| `locale` | `ps-AF` | `ps-AF`, `fa-AF`, `fa-IR`, `en` |
+| `calendar` | `jalali` | `jalali` or `gregorian` |
+| `value` | `null` or input ISO | Initial Gregorian date |
+| `min`, `max` | Unset | Inclusive Gregorian ISO limits |
+| `weekStartsOn` | `6` | Saturday; Sunday is `0` |
+| `numerals` | Locale-dependent | `persian` or `latin` |
+| `theme` | `auto` | `light`, `dark`, `auto` |
+| `onChange` | Unset | Callback receiving ISO string or `null` |
+
+<details>
+<summary><strong>Component methods</strong></summary>
+
+~~~ts
+picker.getValue();             // '2026-10-19' or null
 picker.setValue('2026-10-19');
+picker.setValue(null);
 picker.open();
 picker.close();
 picker.destroy();
 ~~~
 
-The **visible input** displays a localized date. The library creates a hidden input with the original field name and a Gregorian ISO value. Submitting the form sends invoice_date=2026-10-19; empty selection submits an empty string.
+Call `destroy()` when removing the associated input, including component cleanup in React and Vue.
 
-The datepicker takes ownership of the input's value while active, and its destroy() method restores the original name and readonly state. The original display value is not restored by destroy().
+</details>
 
-## Ready-to-run platform examples
-
-This repository includes local projects for [Core PHP](examples/php), [Laravel](examples/laravel), [Django / Python](examples/django), [TypeScript](examples/typescript), [React](examples/react), and [Vue 3](examples/vue). [React Native](examples/react-native) and [Flutter](examples/flutter) are separate native prototypes, not production-tested mobile packages.
-
-The build includes dist/afghan-datepicker.global.js, which can be loaded with a browser script tag, and a DOM-free package core entry point for Node.js and React Native. See [PLATFORMS.md](docs/PLATFORMS.md).
-
-## Supported options
-
-| Option | Default | Meaning |
-| --- | --- | --- |
-| locale | ps-AF | ps-AF, fa-AF, fa-IR, en |
-| calendar | jalali | jalali or gregorian view |
-| value | null or input ISO | Selected Gregorian ISO date |
-| min, max | unset | Inclusive Gregorian ISO boundaries |
-| weekStartsOn | 6 | Sunday = 0; Saturday = 6 |
-| numerals | persian (latin for en) | persian or latin digit display |
-| theme | auto | light, dark or auto |
-| onChange | unset | Callback receiving ISO string or null |
-
-Gregorian ISO dates always use Western digits in stored values. No timestamp or timezone is inferred from an ISO date. Today uses the browser's local date.
-
-## Calendar utility API
+<details>
+<summary><strong>Calendar utilities · browser and Node.js</strong></summary>
 
 ~~~ts
-import { toCalendar, fromCalendar, addDays } from '@fidatech/afghan-datepicker';
+import {
+  toCalendar,
+  fromCalendar,
+  addDays
+} from '@fidatech/afghan-datepicker/core';
 
-toCalendar('2016-04-11'); // { year: 1395, month: 1, day: 23 }
-fromCalendar({ year: 1395, month: 1, day: 23 }); // '2016-04-11'
-addDays('2024-02-28', 1); // '2024-02-29'
+toCalendar('2016-04-11');
+// { year: 1395, month: 1, day: 23 }
+
+fromCalendar({ year: 1395, month: 1, day: 23 });
+// '2016-04-11'
+
+addDays('2024-02-28', 1);
+// '2024-02-29'
 ~~~
 
-Jalali conversion uses the established [jalaali-js](https://github.com/jalaali/jalaali-js) algorithm. Its supported year range is bounded and very distant dates can differ from astronomical calendar calculations. Dates intended for official/legal use should be independently checked.
+</details>
 
-## Keyboard accessibility
+<details>
+<summary><strong>Keyboard and RTL behavior</strong></summary>
 
-Activate the field with Enter, Space or Arrow Down. Click the displayed month to choose among all 12 months, or click the year to browse year pages and select a year followed by a month. The adjacent chevrons navigate months (or years in selection mode). Navigate dates with arrow keys, including week jumps with Up/Down. Use Enter to select and Escape to close. Left/right follows the calendar display direction. Full weekday names are used in every locale, including on mobile.
+Activate the input with **Enter**, **Space** or **Arrow Down**. The arrow keys navigate dates, **Enter** selects and **Escape** closes. Left/right follows the calendar display direction.
 
-## Planned improvements
+The web component has focus indicators and browser tests. Additional assistive-technology testing is planned.
 
-- Automated real-browser component tests and screen-reader review.
-- Month/year jump controls and additional accessibility refinements.
-- Dedicated React/Vue wrappers and Laravel examples.
-- Review Pashto/Dari wording with native-speaking contributors.
+</details>
 
-These features are planned and are not part of the current release.
+## Development and quality checks
 
-## Contributing and licensing
+~~~bash
+npm install
+npm run build          # Build ESM, CommonJS, browser and core bundles
+npm run typecheck      # Validate TypeScript
+npm run test           # Calendar conversion tests
+npm run test:package   # Package entry points
+npm run test:browser   # Chromium UI tests
+npm run check          # All checks
+~~~
 
-See CONTRIBUTING.md. MIT license, copyright 2026 Fida Technologies. See THIRD_PARTY_NOTICES.md for bundled dependencies.
+The [GitHub Actions suite](.github/workflows/ci.yml) also validates the example projects, including Dart static analysis for the Flutter prototype.
 
-Maintainer: [@fidatech](https://github.com/fidatech) · [Fida Technologies](https://fida.af)
+> [!IMPORTANT]
+> Jalali conversion is based on [jalaali-js](https://github.com/jalaali/jalaali-js), which has a bounded supported year range. Dates used in official or legal contexts should be checked against the applicable calendar authority.
+
+## Documentation & community
+
+Explore the [documentation source and local demo](demo/index.html), [platform integration guide](docs/PLATFORMS.md) and [release instructions](docs/RELEASING.md). An offline documentation bundle is included in the [GitHub beta release](https://github.com/fidatech/afghan-datepicker/releases/tag/v0.2.0-beta.1).
+
+Contributions are welcome, particularly Pashto/Dari language review, accessibility testing and real-world framework integrations. Read [CONTRIBUTING.md](CONTRIBUTING.md), open an [issue](https://github.com/fidatech/afghan-datepicker/issues) or submit a pull request.
+
+---
+
+<div align="center">
+
+**Built for Afghan and Persian-speaking developers.**
+
+[![By Fida Technologies](https://img.shields.io/badge/By-Fida%20Technologies-0D1E2A?style=flat-square&labelColor=F77700)](https://fida.af)
+
+[Repository](https://github.com/fidatech/afghan-datepicker) &nbsp;·&nbsp; [MIT License](LICENSE) &nbsp;·&nbsp; [Third-party notices](THIRD_PARTY_NOTICES.md)
+
+</div>
