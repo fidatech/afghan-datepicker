@@ -1,0 +1,63 @@
+{
+  "name": "@fidatech/afghan-datepicker",
+  "version": "0.1.0",
+  "description": "Accessible Pashto, Dari, Persian and English Jalali/Gregorian datepicker",
+  "type": "module",
+  "license": "MIT",
+  "author": "Fida Technologies",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fidatech/afghan-datepicker.git"
+  },
+  "homepage": "https://github.com/fidatech/afghan-datepicker#readme",
+  "bugs": {
+    "url": "https://github.com/fidatech/afghan-datepicker/issues"
+  },
+  "sideEffects": [
+    "./src/datepicker.css"
+  ],
+  "files": [
+    "dist",
+    "src/datepicker.css",
+    "LICENSE",
+    "THIRD_PARTY_NOTICES.md",
+    "README.md"
+  ],
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./styles.css": "./src/datepicker.css"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "npm run build && node --test tests/*.test.mjs",
+    "check": "npm run typecheck && npm test"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.12",
+    "typescript": "^5.8.3",
+    "jalaali-js": "^2.0.1"
+  },
+  "keywords": [
+    "datepicker",
+    "pashto",
+    "dari",
+    "persian",
+    "afghanistan",
+    "jalali",
+    "solar-hijri",
+    "rtl",
+    "calendar",
+    "typescript"
+  ],
+  "engines": {
+    "node": ">=20"
+  }
+}

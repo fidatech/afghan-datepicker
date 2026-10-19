@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Afghan Datepicker — four locales</title>
+  <link rel="stylesheet" href="../src/datepicker.css">
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;background:#f4f7fb;color:#15243a;font-family:system-ui,sans-serif}
+    main{width:min(960px,calc(100% - 32px));margin:56px auto}
+    h1{font-size:clamp(26px,4vw,40px);margin:0 0 8px}
+    .subtitle{color:#64748b;margin-bottom:30px;line-height:1.6}
+    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px}
+    section{padding:24px;background:white;border:1px solid #dce3ee;border-radius:16px;min-height:190px}
+    h2{font-size:17px;margin:0 0 16px}
+    label{display:block;margin-bottom:8px;font-size:13px;color:#64748b}
+    output{display:block;margin-top:16px;font-family:ui-monospace,monospace;color:#173f86;direction:ltr;text-align:start}
+    footer{margin-top:28px;color:#64748b;font-size:13px}
+    a{color:#173f86}
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Afghan Datepicker</h1>
+    <p class="subtitle">Pashto, Dari, Persian and English date inputs. The visible dates are localized; the output remains Gregorian YYYY-MM-DD.</p>
+    <div class="cards">
+      <section lang="ps" dir="rtl"><h2>پښتو — Pashto</h2><label for="ps">نېټه</label><input id="ps" name="ps_date"><output id="ps-out">—</output></section>
+      <section lang="fa-AF" dir="rtl"><h2>دری — Dari</h2><label for="dari">تاریخ</label><input id="dari" name="dari_date"><output id="dari-out">—</output></section>
+      <section lang="fa-IR" dir="rtl"><h2>فارسی — Persian</h2><label for="fa">تاریخ</label><input id="fa" name="fa_date"><output id="fa-out">—</output></section>
+      <section><h2>English — Gregorian</h2><label for="en">Date</label><input id="en" name="en_date"><output id="en-out">—</output></section>
+    </div>
+    <footer>Open source by <a href="https://github.com/fidatech/afghan-datepicker">Fida Technologies</a>. Build locally with npm run build before opening this demo via a local HTTP server.</footer>
+  </main>
+  <script type="module">
+    import { AfghanDatepicker } from '../dist/index.js';
+    for (const [id,locale,calendar] of [
+      ['ps','ps-AF','jalali'],['dari','fa-AF','jalali'],
+      ['fa','fa-IR','jalali'],['en','en','gregorian']
+    ]) {
+      new AfghanDatepicker('#'+id, {
+        locale,calendar,
+        onChange: iso => {
+          document.getElementById(id+'-out').textContent=iso??'—';
+        }
+      });
+    }
+  </script>
+</body>
+</html>
