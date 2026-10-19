@@ -10,7 +10,8 @@ const mime = {'.html':'text/html','.js':'text/javascript','.css':'text/css','.ma
 async function startServer() {
   const server = createServer(async (req, res) => {
     try {
-      const path = new URL(req.url ?? '/', 'http://127.0.0.1').pathname;
+      let path = new URL(req.url ?? '/', 'http://127.0.0.1').pathname;
+      if (path.endsWith('/')) path += 'index.html';
       const file = resolve(join(root, decodeURIComponent(path)));
       if (!file.startsWith(root + sep) && file !== root) {
         res.writeHead(403).end();
@@ -37,7 +38,9 @@ test('date inputs open functioning calendar popups in Chromium', {timeout:45000}
     const errors = [];
     page.on('pageerror', (e) => errors.push(e.stack ?? e.message));
     page.on('console',(msg) => {if(msg.type() === 'error') errors.push(msg.text());});
-    await page.goto(url);
+    const response = await page.goto(url);
+    assert.equal(response?.status(), 200, 'Demo HTTP status');
+    await page.locator('#ps').waitFor({timeout:5000});
     for (const id of ['ps','dari','fa','en']) {
       await page.locator('#' + id).click();
       const host = page.locator('#' + id).locator('xpath=..');
