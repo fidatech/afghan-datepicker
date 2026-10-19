@@ -92,10 +92,17 @@ test('date inputs open functioning calendar popups in Chromium', {timeout:45000}
     // Documentation navigation highlights the current tab in Fida navy/orange.
     const installTab = page.locator('.sidebar a[href="#installation"]');
     await installTab.click();
-    await page.waitForFunction(() =>
-      document.querySelector('.sidebar a[href="#installation"]')
-        ?.getAttribute('aria-current') === 'location'
-    );
+    await page.waitForTimeout(250);
+    const clickedTabState = await page.evaluate(() => ({
+      hash: location.hash,
+      y: window.scrollY,
+      installationTop: document.getElementById('installation').getBoundingClientRect().top,
+      active: Array.from(document.querySelectorAll('.sidebar a[aria-current]'))
+        .map((a) => a.getAttribute('href')),
+      clicked: document.querySelector('.sidebar a[href="#installation"]')?.getAttribute('aria-current')
+    }));
+    assert.equal(clickedTabState.clicked, 'location',
+      'Sidebar clicked state: ' + JSON.stringify(clickedTabState) + ' / JS errors: ' + errors.join(' | '));
     assert.equal(await page.locator('.sidebar a[aria-current="location"]').count(), 1);
     assert.equal(await installTab.evaluate((node) => getComputedStyle(node).backgroundColor), 'rgb(13, 30, 42)');
     await page.evaluate(() => {
