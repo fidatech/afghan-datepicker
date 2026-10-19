@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shamsi_date/shamsi_date.dart';
 
 String isoDate(DateTime date) =>
-    date.year.toString().padLeft(4, '0') + '-' +
-    date.month.toString().padLeft(2, '0') + '-' +
-    date.day.toString().padLeft(2, '0');
+    '${date.year.toString().padLeft(4, '0')}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
 
 const monthNames = <String, List<String>>{
   'ps-AF': ['وری','غویی','غبرګولی','چنګاښ','زمری','وږی','تله','لړم','لیندۍ','مرغومی','سلواغه','کب'],
@@ -42,10 +40,9 @@ class AfghanDatepickerField extends StatelessWidget {
   Widget build(BuildContext context) {
     final selectedLocale = monthNames.containsKey(locale) ? locale : 'ps-AF';
     final selected = value == null ? null : Jalali.fromDateTime(value!);
-    final title = selected == null ? 'Choose date' :
-      localDigits(selected.day, selectedLocale) + ' ' +
-      monthNames[selectedLocale]![selected.month - 1] + ' ' +
-      localDigits(selected.year, selectedLocale);
+    final title = selected == null
+        ? 'Choose date'
+        : '${localDigits(selected.day, selectedLocale)} ${monthNames[selectedLocale]![selected.month - 1]} ${localDigits(selected.year, selectedLocale)}';
     return OutlinedButton.icon(
       icon: const Icon(Icons.calendar_month),
       label: Text(title),
