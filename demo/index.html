@@ -436,7 +436,7 @@ todayISO();               // Current local Gregorian date</code></pre></div>
 
     function updateActiveSection() {
       if (!sections.length) return;
-      const readingLine = 160;
+      const readingLine = 220; // Accounts for scroll-padding (84px) + section scroll-margin (98px).
       let active = sections[0].link;
       for (const item of sections) {
         if (item.section.getBoundingClientRect().top <= readingLine) {
