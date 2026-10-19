@@ -416,6 +416,57 @@ todayISO();               // Current local Gregorian date</code></pre></div>
         }
       });
     }
+    // Keep the documentation's active navigation tab in sync with clicks,
+    // hash navigation, and the section currently being read while scrolling.
+    const sectionLinks = Array.from(document.querySelectorAll('.sidebar a[href^="#"]'));
+    const sections = sectionLinks.map((link) => ({
+      link,
+      section: document.getElementById(link.getAttribute('href').slice(1))
+    })).filter((item) => item.section);
+
+    function markActive(link) {
+      for (const item of sectionLinks) {
+        if (item === link) {
+          item.setAttribute('aria-current', 'location');
+        } else {
+          item.removeAttribute('aria-current');
+        }
+      }
+    }
+
+    function updateActiveSection() {
+      if (!sections.length) return;
+      const readingLine = 160;
+      let active = sections[0].link;
+      for (const item of sections) {
+        if (item.section.getBoundingClientRect().top <= readingLine) {
+          active = item.link;
+        } else {
+          break;
+        }
+      }
+      if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 3) {
+        active = sections[sections.length - 1].link;
+      }
+      markActive(active);
+    }
+
+    let activeFramePending = false;
+    window.addEventListener('scroll', () => {
+      if (activeFramePending) return;
+      activeFramePending = true;
+      requestAnimationFrame(() => {
+        activeFramePending = false;
+        updateActiveSection();
+      });
+    }, { passive: true });
+    window.addEventListener('hashchange', updateActiveSection);
+    for (const item of sections) {
+      item.link.addEventListener('click', () => markActive(item.link));
+    }
+    updateActiveSection();
+    requestAnimationFrame(updateActiveSection);
+
     for (const button of document.querySelectorAll('.copy-button')) {
       button.addEventListener('click', async () => {
         const code = button.closest('.code-wrap')?.querySelector('code');

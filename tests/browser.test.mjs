@@ -89,6 +89,28 @@ test('date inputs open functioning calendar popups in Chromium', {timeout:45000}
     const response = await page.goto(url);
     assert.equal(response?.status(), 200, 'Demo HTTP status');
     await page.locator('#ps').waitFor({timeout:5000});
+    // Documentation navigation highlights the current tab in Fida navy/orange.
+    const installTab = page.locator('.sidebar a[href="#installation"]');
+    await installTab.click();
+    await page.waitForFunction(() =>
+      document.querySelector('.sidebar a[href="#installation"]')
+        ?.getAttribute('aria-current') === 'location'
+    );
+    assert.equal(await page.locator('.sidebar a[aria-current="location"]').count(), 1);
+    assert.equal(await installTab.evaluate((node) => getComputedStyle(node).backgroundColor), 'rgb(13, 30, 42)');
+    await page.evaluate(() => {
+      document.getElementById('options')?.scrollIntoView({block:'start', behavior:'instant'});
+    });
+    await page.waitForFunction(() =>
+      document.querySelector('.sidebar a[href="#options"]')
+        ?.getAttribute('aria-current') === 'location'
+    );
+    await page.locator('.sidebar a[href="#playground"]').click();
+    await page.waitForFunction(() =>
+      document.querySelector('.sidebar a[href="#playground"]')
+        ?.getAttribute('aria-current') === 'location'
+    );
+
     // The documentation and supplied Fida artwork should load without errors.
     const mark = page.locator('.brand-mark');
     await mark.evaluate((img) => img.decode());
