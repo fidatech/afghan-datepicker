@@ -45,6 +45,8 @@ export class AfghanDatepicker {
   private onChange?: (iso: string | null) => void;
   private disposed = false;
   private suppressFocusOpen = false;
+  private displayMode: 'days' | 'months' | 'years' = 'days';
+  private yearPageStart = 0;
 
   constructor(target: string | HTMLInputElement, options: DatepickerOptions = {}) {
     const input = typeof target === 'string' ? document.querySelector(target) : target;
@@ -82,6 +84,7 @@ export class AfghanDatepicker {
     }
     this.selected = supplied || null;
     this.view = toCalendar(this.selected ?? todayISO(), this.calendar);
+    this.yearPageStart = Math.floor(this.view.year / 12) * 12;
 
     this.originalName = input.getAttribute('name');
     this.originalPlaceholder = input.placeholder;
@@ -121,6 +124,7 @@ export class AfghanDatepicker {
     input.addEventListener('keydown', this.onInputKey);
     this.popup.addEventListener('keydown', this.onPopupKey);
     document.addEventListener('pointerdown', this.onOutside);
+    window.addEventListener('resize', this.positionPopup);
   }
 
   getValue(): string | null {
@@ -147,6 +151,7 @@ export class AfghanDatepicker {
     if (!this.popup.hidden) return;
     this.popup.hidden = false;
     this.input.setAttribute('aria-expanded', 'true');
+    this.displayMode = 'days';
     this.render();
   };
 
@@ -165,6 +170,7 @@ export class AfghanDatepicker {
     this.input.removeEventListener('keydown', this.onInputKey);
     this.popup.removeEventListener('keydown', this.onPopupKey);
     document.removeEventListener('pointerdown', this.onOutside);
+    window.removeEventListener('resize', this.positionPopup);
     this.input.classList.remove('adp-input');
     this.input.readOnly = this.originalReadonly;
     this.input.placeholder = this.originalPlaceholder;
@@ -207,34 +213,177 @@ export class AfghanDatepicker {
     return button;
   }
 
+  /** Each chevron is an actual SVG, with a stable direction in RTL and LTR. */
+  private navButton(direction: 'previous' | 'next', label: string, action: () => void): HTMLButtonElement {
+    const button = this.button('', 'adp-nav', action);
+    button.setAttribute('aria-label', label);
+    button.title = label;
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('viewBox', '0 0 24 24');
+    svg.setAttribute('width', '18');
+    svg.setAttribute('height', '18');
+    svg.setAttribute('fill', 'none');
+    svg.setAttribute('stroke', 'currentColor');
+    svg.setAttribute('stroke-width', '2');
+    svg.setAttribute('stroke-linecap', 'round');
+    svg.setAttribute('stroke-linejoin', 'round');
+    svg.setAttribute('aria-hidden', 'true');
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    // In RTL: first button is on the right; it shows <, and the left button shows >.
+    path.setAttribute('d', direction === 'previous' ? 'm15 18-6-6 6-6' : 'm9 18 6-6-6-6');
+    svg.append(path);
+    button.append(svg);
+    return button;
+  }
+
+  private canShowMonth(year: number, month: number): boolean {
+    try {
+      const first = fromCalendar({ year, month, day: 1 }, this.calendar);
+      const last = fromCalendar({ year, month, day: monthLength(year, month, this.calendar) }, this.calendar);
+      return (!this.min || last >= this.min) && (!this.max || first <= this.max);
+    } catch {
+      // Outside jalaali-js supported years, or beyond Gregorian ISO year limits.
+      return false;
+    }
+  }
+
+  private canShowYear(year: number): boolean {
+    for (let month = 1; month <= 12; month++) {
+      if (this.canShowMonth(year, month)) return true;
+    }
+    return false;
+  }
+
+  private toggleMode(mode: 'months' | 'years'): void {
+    this.displayMode = this.displayMode === mode ? 'days' : mode;
+    if (this.displayMode === 'years') {
+      this.yearPageStart = Math.floor(this.view.year / 12) * 12;
+    }
+    this.render();
+    const selector = mode === 'months' ? '.adp-month-trigger' : '.adp-year-trigger';
+    this.popup.querySelector<HTMLButtonElement>(selector)?.focus({ preventScroll: true });
+  }
+
   private render(): void {
     this.popup.replaceChildren();
     const dictionary = locales[this.locale];
-    const dirRTL = this.locale !== 'en';
     const header = document.createElement('div');
     header.className = 'adp-header';
-    const previous = this.button(dirRTL ? '›' : '‹', 'adp-nav', () => this.changeMonth(-1));
-    previous.setAttribute('aria-label', dictionary.previousMonth);
-    const next = this.button(dirRTL ? '‹' : '›', 'adp-nav', () => this.changeMonth(1));
-    next.setAttribute('aria-label', dictionary.nextMonth);
-    const title = document.createElement('strong');
-    title.className = 'adp-title';
-    title.textContent = getMonthName(this.view.month, this.calendar, this.locale) +
-      ' ' + digits(this.view.year, this.numerals);
-    header.append(previous, title, next);
+
+    const previousLabel = this.displayMode === 'years' ? dictionary.previousYears :
+      this.displayMode === 'months' ? dictionary.previousYear : dictionary.previousMonth;
+    const nextLabel = this.displayMode === 'years' ? dictionary.nextYears :
+      this.displayMode === 'months' ? dictionary.nextYear : dictionary.nextMonth;
+    const previous = this.navButton('previous', previousLabel, () => this.navigate(-1));
+    const next = this.navButton('next', nextLabel, () => this.navigate(1));
+    const heading = document.createElement('div');
+    heading.className = 'adp-heading';
+    const month = this.button(
+      getMonthName(this.view.month, this.calendar, this.locale),
+      'adp-picker-trigger adp-month-trigger',
+      () => this.toggleMode('months')
+    );
+    month.setAttribute('aria-label', dictionary.chooseMonth);
+    month.setAttribute('aria-expanded', String(this.displayMode === 'months'));
+    month.setAttribute('aria-pressed', String(this.displayMode === 'months'));
+    const year = this.button(
+      digits(this.view.year, this.numerals),
+      'adp-picker-trigger adp-year-trigger',
+      () => this.toggleMode('years')
+    );
+    year.setAttribute('aria-label', dictionary.chooseYear);
+    year.setAttribute('aria-expanded', String(this.displayMode === 'years'));
+    year.setAttribute('aria-pressed', String(this.displayMode === 'years'));
+    heading.append(month, year);
+    header.append(previous, heading, next);
     this.popup.append(header);
 
+    if (this.displayMode === 'months') {
+      previous.disabled = !this.canShowYear(this.view.year - 1);
+      next.disabled = !this.canShowYear(this.view.year + 1);
+      this.renderMonths();
+    } else if (this.displayMode === 'years') {
+      previous.disabled = !Array.from({ length: 12 }, (_, i) => this.yearPageStart - 12 + i)
+        .some((candidate) => this.canShowYear(candidate));
+      next.disabled = !Array.from({ length: 12 }, (_, i) => this.yearPageStart + 12 + i)
+        .some((candidate) => this.canShowYear(candidate));
+      this.renderYears();
+    } else {
+      const before = shiftMonth(this.view, -1);
+      const after = shiftMonth(this.view, 1);
+      previous.disabled = !this.canShowMonth(before.year, before.month);
+      next.disabled = !this.canShowMonth(after.year, after.month);
+      this.renderDays();
+      this.renderFooter();
+    }
+    this.positionPopup();
+  }
+
+  private renderMonths(): void {
+    const grid = document.createElement('div');
+    grid.className = 'adp-choices adp-month-choices';
+    grid.setAttribute('role', 'group');
+    grid.setAttribute('aria-label', locales[this.locale].chooseMonth);
+    for (let month = 1; month <= 12; month++) {
+      const option = this.button(
+        getMonthName(month, this.calendar, this.locale),
+        'adp-choice adp-month-option',
+        () => {
+          this.view = { year: this.view.year, month };
+          this.displayMode = 'days';
+          this.render();
+          this.popup.querySelector<HTMLButtonElement>('.adp-day:not(:disabled)')?.focus({ preventScroll: true });
+        }
+      );
+      option.disabled = !this.canShowMonth(this.view.year, month);
+      option.setAttribute('aria-pressed', String(month === this.view.month));
+      if (month === this.view.month) option.classList.add('adp-choice-current');
+      grid.append(option);
+    }
+    this.popup.append(grid);
+  }
+
+  private renderYears(): void {
+    const grid = document.createElement('div');
+    grid.className = 'adp-choices adp-year-choices';
+    grid.setAttribute('role', 'group');
+    grid.setAttribute('aria-label', locales[this.locale].chooseYear);
+    for (let year = this.yearPageStart; year < this.yearPageStart + 12; year++) {
+      const candidate = year;
+      const option = this.button(digits(year, this.numerals), 'adp-choice adp-year-option', () => {
+        const selectedMonth = this.canShowMonth(candidate, this.view.month)
+          ? this.view.month
+          : Array.from({ length: 12 }, (_, index) => index + 1)
+            .find((month) => this.canShowMonth(candidate, month));
+        if (selectedMonth === undefined) return;
+        this.view = { year: candidate, month: selectedMonth };
+        this.displayMode = 'months';
+        this.render();
+        this.popup.querySelector<HTMLButtonElement>(
+          '.adp-month-option[aria-pressed="true"]:not(:disabled)'
+        )?.focus({ preventScroll: true });
+      });
+      option.disabled = !this.canShowYear(candidate);
+      option.setAttribute('aria-pressed', String(candidate === this.view.year));
+      if (candidate === this.view.year) option.classList.add('adp-choice-current');
+      grid.append(option);
+    }
+    this.popup.append(grid);
+  }
+
+  private renderDays(): void {
+    const dictionary = locales[this.locale];
     const grid = document.createElement('div');
     grid.className = 'adp-grid';
     grid.setAttribute('role', 'grid');
-    const dayNames = dictionary.weekdays;
     for (let i = 0; i < 7; i++) {
       const dayIndex = (this.weekStartsOn + i) % 7;
       const head = document.createElement('span');
       head.className = 'adp-weekday';
-      head.textContent = dayNames[dayIndex].slice(0, 2);
-      head.title = dayNames[dayIndex];
-      head.setAttribute('aria-label', dayNames[dayIndex]);
+      // The complete name is always displayed. No automatic slicing or abbreviations.
+      head.textContent = dictionary.weekdays[dayIndex];
+      head.title = dictionary.weekdays[dayIndex];
+      head.setAttribute('aria-label', dictionary.weekdays[dayIndex]);
       grid.append(head);
     }
     const firstISO = fromCalendar({ ...this.view, day: 1 }, this.calendar);
@@ -270,15 +419,19 @@ export class AfghanDatepicker {
       grid.append(cell);
     }
     this.popup.append(grid);
+  }
+
+  private renderFooter(): void {
+    const dictionary = locales[this.locale];
     const footer = document.createElement('div');
     footer.className = 'adp-footer';
-    const todayButton = this.button(dictionary.today, 'adp-action', () => {
+    const todayButton = this.button(dictionary.today, 'adp-action adp-today-action', () => {
       this.setValue(todayISO());
       this.close();
       this.returnFocus();
     });
-    todayButton.disabled = !this.allowed(today);
-    const clearButton = this.button(dictionary.clear, 'adp-action', () => {
+    todayButton.disabled = !this.allowed(todayISO());
+    const clearButton = this.button(dictionary.clear, 'adp-action adp-clear-action', () => {
       this.setValue(null);
       this.close();
       this.returnFocus();
@@ -287,16 +440,36 @@ export class AfghanDatepicker {
     this.popup.append(footer);
   }
 
-  private changeMonth(offset: number): void {
-    const next = shiftMonth(this.view, offset);
-    try {
-      fromCalendar({ ...next, day: 1 }, this.calendar);
-      this.view = next;
-      this.render();
-    } catch {
-      // Calendar conversion is defined only for a bounded range of years.
+  private navigate(offset: number): void {
+    if (this.displayMode === 'years') {
+      const next = this.yearPageStart + offset * 12;
+      if (Array.from({ length: 12 }, (_, i) => next + i).some((year) => this.canShowYear(year))) {
+        this.yearPageStart = next;
+      }
+    } else if (this.displayMode === 'months') {
+      if (this.canShowYear(this.view.year + offset)) {
+        this.view = { year: this.view.year + offset, month: this.view.month };
+      }
+    } else {
+      const next = shiftMonth(this.view, offset);
+      if (this.canShowMonth(next.year, next.month)) this.view = next;
     }
+    this.render();
   }
+
+  /** Keep wide, full-weekday popups on screen, including narrow RTL layouts. */
+  private positionPopup = (): void => {
+    if (this.popup.hidden) return;
+    this.popup.style.transform = '';
+    const bounds = this.popup.getBoundingClientRect();
+    const viewport = document.documentElement.clientWidth;
+    const margin = 10;
+    if (bounds.left < margin) {
+      this.popup.style.transform = 'translateX(' + (margin - bounds.left) + 'px)';
+    } else if (bounds.right > viewport - margin) {
+      this.popup.style.transform = 'translateX(' + (viewport - margin - bounds.right) + 'px)';
+    }
+  };
 
   private onFocus = (): void => {
     if (!this.suppressFocusOpen) this.open();

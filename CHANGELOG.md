@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- Redesigned popup and demo with responsive layout, SVG navigation chevrons and full weekday names.
+- Updated Pashto and Dari weekdays per community feedback.
+- Added clickable month and year selectors (12-month and 12-year grids).
+- Keep wide RTL popups inside the viewport, with browser regression coverage.
+
 ## 0.1.0 — Initial implementation
 
 - TypeScript component with Pashto, Dari, Persian and English locales.

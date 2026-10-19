@@ -8,7 +8,8 @@ Pashto (ps-AF) · Dari (fa-AF) · Iranian Persian (fa-IR) · English (en).
 
 - Solar Hijri/Jalali and Gregorian views with separate Afghan and Iranian month names.
 - Gregorian YYYY-MM-DD storage/output, suitable for backend APIs, Laravel and database fields.
-- Lightweight RTL/LTR UI, localized digits, accessible button labels and keyboard navigation.
+- Redesigned responsive RTL/LTR popup with complete weekday names (no abbreviations), localized digits, and keyboard navigation.
+- Clickable month and year headers: choose a month or jump between 12-year pages; chevron icons match the requested RTL layout.
 - Inclusive min/max dates, Today and Clear controls, light/dark/automatic themes.
 - CSS isolated under the .adp-host class. No fonts, tracking, remote scripts or API keys.
 - ESM and CommonJS bundles plus TypeScript declaration files when built.
@@ -100,7 +101,7 @@ Jalali conversion uses the established [jalaali-js](https://github.com/jalaali/j
 
 ## Keyboard accessibility
 
-Activate the field with Enter, Space or Arrow Down. Navigate dates with arrow keys, including week jumps with Up/Down. Use Enter to select and Escape to close. Left/right follows the calendar display direction.
+Activate the field with Enter, Space or Arrow Down. Click the displayed month to choose among all 12 months, or click the year to browse year pages and select a year followed by a month. The adjacent chevrons navigate months (or years in selection mode). Navigate dates with arrow keys, including week jumps with Up/Down. Use Enter to select and Escape to close. Left/right follows the calendar display direction. Full weekday names are used in every locale, including on mobile.
 
 ## Planned improvements
 

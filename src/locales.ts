@@ -10,32 +10,50 @@ export interface Dictionary {
   previousMonth: string;
   nextMonth: string;
   chooseDate: string;
+  chooseMonth: string;
+  chooseYear: string;
+  previousYear: string;
+  nextYear: string;
+  previousYears: string;
+  nextYears: string;
 }
 
 export const locales: Record<Locale, Dictionary> = {
   'ps-AF': {
     months: ['وری', 'غویی', 'غبرګولی', 'چنګاښ', 'زمری', 'وږی', 'تله', 'لړم', 'لیندۍ', 'مرغومی', 'سلواغه', 'کب'],
-    weekdays: ['یکشنبه', 'دوشنبه', 'سې شنبه', 'چهارشنبه', 'پنجشنبه', 'جمعه', 'شنبه'],
+    weekdays: ['یونۍ', 'دونۍ', 'درېنۍ', 'څلورنۍ', 'پنځنۍ', 'جمعه', 'خالي'],
     today: 'نن', clear: 'پاکول', previousMonth: 'تېره میاشت', nextMonth: 'راتلونکې میاشت',
-    chooseDate: 'نېټه وټاکئ'
+    chooseDate: 'نېټه وټاکئ',
+    chooseMonth: 'میاشت وټاکئ', chooseYear: 'کال وټاکئ',
+    previousYear: 'تېر کال', nextYear: 'راتلونکی کال',
+    previousYears: 'تېر کلونه', nextYears: 'راتلونکي کلونه'
   },
   'fa-AF': {
     months: ['حمل', 'ثور', 'جوزا', 'سرطان', 'اسد', 'سنبله', 'میزان', 'عقرب', 'قوس', 'جدی', 'دلو', 'حوت'],
-    weekdays: ['یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنجشنبه', 'جمعه', 'شنبه'],
+    weekdays: ['یکشنبه', 'دوشنبه', 'سه شنبه', 'چهارشنبه', 'پنج شنبه', 'جمعه', 'شنبه'],
     today: 'امروز', clear: 'پاک کردن', previousMonth: 'ماه قبل', nextMonth: 'ماه بعد',
-    chooseDate: 'تاریخ را انتخاب کنید'
+    chooseDate: 'تاریخ را انتخاب کنید',
+    chooseMonth: 'انتخاب ماه', chooseYear: 'انتخاب سال',
+    previousYear: 'سال قبل', nextYear: 'سال بعد',
+    previousYears: 'سال‌های قبل', nextYears: 'سال‌های بعد'
   },
   'fa-IR': {
     months: ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'],
     weekdays: ['یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنجشنبه', 'جمعه', 'شنبه'],
     today: 'امروز', clear: 'پاک کردن', previousMonth: 'ماه قبل', nextMonth: 'ماه بعد',
-    chooseDate: 'تاریخ را انتخاب کنید'
+    chooseDate: 'تاریخ را انتخاب کنید',
+    chooseMonth: 'انتخاب ماه', chooseYear: 'انتخاب سال',
+    previousYear: 'سال قبل', nextYear: 'سال بعد',
+    previousYears: 'سال‌های قبل', nextYears: 'سال‌های بعد'
   },
   en: {
     months: ['Hamal', 'Sawr', 'Jawza', 'Saratan', 'Asad', 'Sonbola', 'Mizan', 'Aqrab', 'Qaws', 'Jadi', 'Dalw', 'Hut'],
     weekdays: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
     today: 'Today', clear: 'Clear', previousMonth: 'Previous month', nextMonth: 'Next month',
-    chooseDate: 'Choose date'
+    chooseDate: 'Choose date',
+    chooseMonth: 'Choose month', chooseYear: 'Choose year',
+    previousYear: 'Previous year', nextYear: 'Next year',
+    previousYears: 'Previous years', nextYears: 'Next years'
   }
 };
 

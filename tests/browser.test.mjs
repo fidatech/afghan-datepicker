@@ -104,6 +104,14 @@ test('date inputs open functioning calendar popups in Chromium', {timeout:45000}
       assert.notEqual(state.display,'none',id+' not displayed: '+JSON.stringify(state));
       assert.ok(state.height > 100,id+' popup has no height: '+JSON.stringify(state));
       assert.ok(await popup.locator('button.adp-day:not([disabled])').count() >= 28,id+' missing date buttons');
+      const fullWeekdays = {
+        ps: ['خالي','یونۍ','دونۍ','درېنۍ','څلورنۍ','پنځنۍ','جمعه'],
+        dari: ['شنبه','یکشنبه','دوشنبه','سه شنبه','چهارشنبه','پنج شنبه','جمعه'],
+        fa: ['شنبه','یکشنبه','دوشنبه','سه‌شنبه','چهارشنبه','پنجشنبه','جمعه'],
+        en: ['Saturday','Sunday','Monday','Tuesday','Wednesday','Thursday','Friday']
+      };
+      assert.deepEqual(await popup.locator('.adp-weekday').allTextContents(), fullWeekdays[id],
+        id+' uses complete weekday names');
       await page.keyboard.press('Escape');
       assert.equal(await popup.evaluate((p) => getComputedStyle(p).display), 'none',
         id + ' popup is hidden again after Escape');
@@ -111,6 +119,42 @@ test('date inputs open functioning calendar popups in Chromium', {timeout:45000}
     await page.locator('#ps').focus();
     const psPopup = page.locator('#ps').locator('xpath=..').locator('.adp-popup');
     assert.equal(await psPopup.evaluate((p) => p.hidden), false, 'Keyboard focus opens the popup');
+
+    // Full names stay visible, including long words. No abbreviations.
+    assert.deepEqual(await psPopup.locator('.adp-weekday').allTextContents(), [
+      'خالي', 'یونۍ', 'دونۍ', 'درېنۍ', 'څلورنۍ', 'پنځنۍ', 'جمعه'
+    ]);
+    const navIcons = psPopup.locator('.adp-nav svg path');
+    assert.equal(await navIcons.first().getAttribute('d'), 'm15 18-6-6 6-6');
+    assert.equal(await navIcons.last().getAttribute('d'), 'm9 18 6-6-6-6');
+
+    // Month header must open a complete, selectable 12-month grid.
+    await psPopup.locator('.adp-month-trigger').click();
+    assert.equal(await psPopup.locator('.adp-month-option').count(), 12);
+    assert.equal(await psPopup.locator('.adp-day').count(), 0, 'Month panel replaces date grid');
+    await psPopup.locator('.adp-month-option:not(:disabled)').nth(3).click();
+    assert.equal(await psPopup.locator('.adp-weekday').count(), 7, 'Selecting month returns to dates');
+
+    // Clicking the year opens 12 years; selecting one then chooses a month.
+    await psPopup.locator('.adp-year-trigger').click();
+    assert.equal(await psPopup.locator('.adp-year-option').count(), 12);
+    await psPopup.locator('.adp-year-option:not(:disabled)').first().click();
+    assert.equal(await psPopup.locator('.adp-month-option').count(), 12);
+    await psPopup.locator('.adp-month-option:not(:disabled)').first().click();
+    assert.ok(await psPopup.locator('.adp-day').count() >= 28);
+
+    // On small screens the popup must remain inside the visible viewport.
+    await page.setViewportSize({width: 375, height: 780});
+    await page.waitForFunction(() => {
+      const popup = document.querySelector('#ps')?.parentElement?.querySelector('.adp-popup');
+      if (!popup) return false;
+      const box = popup.getBoundingClientRect();
+      return box.left >= 0 && box.right <= document.documentElement.clientWidth;
+    });
+    const bounds = await psPopup.boundingBox();
+    assert.ok(bounds && bounds.x >= 0 && bounds.x + bounds.width <= 375,
+      'Mobile popup fits viewport: ' + JSON.stringify(bounds));
+
     const firstDay = psPopup.locator('button.adp-day:not([disabled])').first();
     const chosenISO = await firstDay.getAttribute('data-iso');
     await firstDay.click();
