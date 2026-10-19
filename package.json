@@ -1,7 +1,7 @@
 {
   "name": "@fidatech/afghan-datepicker",
-  "version": "0.1.0",
-  "description": "Accessible Pashto, Dari, Persian and English Jalali/Gregorian datepicker",
+  "version": "0.2.0-beta.1",
+  "description": "Pashto, Dari, Persian and English Solar Hijri / Gregorian datepicker, browser and framework integrations",
   "type": "module",
   "license": "MIT",
   "author": "Fida Technologies",
@@ -32,14 +32,20 @@
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
     },
+    "./core": {
+      "types": "./dist/core.d.ts",
+      "import": "./dist/core.js",
+      "require": "./dist/core.cjs"
+    },
     "./styles.css": "./src/datepicker.css"
   },
   "scripts": {
     "build": "node scripts/build.mjs",
     "typecheck": "tsc --noEmit",
     "test": "npm run build && node --test tests/calendar.test.mjs",
-    "check": "npm run typecheck && npm run test && npm run test:browser",
-    "test:browser": "npm run build && node --test tests/browser.test.mjs"
+    "check": "npm run typecheck && npm run test && npm run test:package && npm run test:browser",
+    "test:browser": "npm run build && node --test tests/browser.test.mjs",
+    "test:package": "npm run build && node --test tests/package.test.mjs"
   },
   "devDependencies": {
     "esbuild": "^0.25.12",
@@ -61,5 +67,8 @@
   ],
   "engines": {
     "node": ">=20"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

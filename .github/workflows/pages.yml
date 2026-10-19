@@ -1,0 +1,55 @@
+name: Deploy documentation to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'demo/**'
+      - 'src/**'
+      - 'scripts/**'
+      - 'package.json'
+      - 'docs/**'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-audit --no-fund && npm run build
+      - name: Assemble documentation
+        run: |
+          mkdir -p public-site/demo/assets public-site/dist public-site/src
+          cp demo/index.html demo/docs.css public-site/demo/
+          cp demo/assets/* public-site/demo/assets/
+          cp dist/index.js dist/afghan-datepicker.global.js public-site/dist/
+          cp src/datepicker.css public-site/src/
+          cat > public-site/index.html <<'EOF'
+          <!doctype html><html><head><meta http-equiv="refresh" content="0; url=demo/">
+          <meta name="viewport" content="width=device-width,initial-scale=1">
+          <title>Afghan Datepicker Documentation</title></head><body>
+          <p><a href="demo/">Open the documentation</a></p></body></html>
+          EOF
+          touch public-site/.nojekyll
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: public-site
+      - id: deployment
+        uses: actions/deploy-pages@v4

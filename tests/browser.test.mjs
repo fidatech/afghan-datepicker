@@ -94,9 +94,19 @@ test('date inputs open functioning calendar popups in Chromium', {timeout:45000}
     await mark.evaluate((img) => img.decode());
     assert.ok(await mark.evaluate((img) => img.naturalWidth > 0),
       'Fida logo is served as a real image');
-    assert.equal(await page.locator('main .doc-section').count(), 14,
+    assert.equal(await page.locator('main .doc-section').count(), 15,
       'Developer documentation contains the complete set of sections');
     assert.equal(await page.locator('a[href="#installation"]').count() > 0, true);
+    assert.equal(await page.locator('#platforms .feature').count(), 8);
+    const globalReady = await page.evaluate(async () => {
+      const response = await fetch('/dist/afghan-datepicker.global.js');
+      const code = await response.text();
+      if (!response.ok) return false;
+      (0, eval)(code);
+      return typeof window.AfghanDatepicker === 'function' &&
+        typeof window.AfghanCalendar?.toCalendar === 'function';
+    });
+    assert.ok(globalReady, 'Standalone browser bundle exports the documented API');
 
     // Regression: a conflicting author stylesheet can apply display:none after
     // our CSS. The explicitly open popup must still render in that situation.

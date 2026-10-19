@@ -1,0 +1,15 @@
+{
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "tsc --noEmit && vite build"
+  },
+  "dependencies": {
+    "@fidatech/afghan-datepicker": "file:../.."
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3",
+    "vite": "^7.1.0"
+  }
+}
