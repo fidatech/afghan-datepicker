@@ -9,7 +9,7 @@ Start from an existing React Native TypeScript or Expo TypeScript app.
 
 1. Build this repository: npm install && npm run build && npm pack.
 2. In your RN/Expo project, install the generated .tgz file:
-   npm install /absolute/path/fidatech-afghan-datepicker-0.2.0-beta.1.tgz
+   npm install /absolute/path/fidatech-afghan-datepicker-0.3.0-beta.1.tgz
 3. Copy AfghanNativeDatepicker.tsx to your project's components directory.
 4. Import and use it:
 

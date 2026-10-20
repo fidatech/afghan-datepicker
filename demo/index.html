@@ -61,6 +61,7 @@ new AfghanDatepicker('#date', {
     <aside class="sidebar" aria-label="Documentation navigation">
       <strong>Documentation</strong>
       <a href="#playground">Interactive playground</a>
+      <a href="#range">Date range & designs</a>
       <a href="#features">Features</a>
       <a href="#installation">Install and build</a>
       <a href="#quickstart">Vanilla JS / TypeScript</a>
@@ -82,6 +83,15 @@ new AfghanDatepicker('#date', {
         <div class="section-kicker">01 / Interactive</div>
         <h2>Try the datepicker</h2>
         <p>Choose a date in any language. Click the month or year in the popup to jump directly to another period. The value underneath remains in <code>YYYY-MM-DD</code> Gregorian ISO format for APIs and databases.</p>
+        <div class="demo-style-control">
+          <label for="picker-design">Datepicker design</label>
+          <select id="picker-design" aria-label="Choose datepicker visual design">
+            <option value="classic">Classic · Navy</option>
+            <option value="soft">Soft · Orange</option>
+            <option value="minimal">Minimal · Clean</option>
+          </select>
+          <span>Applies to every demo calendar below.</span>
+        </div>
         <div class="demo-grid">
           <div class="demo-card" lang="ps" dir="rtl">
             <h3>پښتو</h3><p class="locale">Pashto · Solar Hijri · ps-AF</p>
@@ -105,6 +115,52 @@ new AfghanDatepicker('#date', {
           </div>
         </div>
         <p style="margin-top:15px">The demo runs entirely in the browser using the local build. No user-entered date is sent to a server.</p>
+      </section>
+
+      <section class="doc-section" id="range">
+        <div class="section-kicker">02 / Date ranges</div>
+        <h2>Choose a date range, in any language</h2>
+        <p>Click once for the start date, then click again for the end date. Days between them are highlighted, including across month and year boundaries. Both dates are returned as Gregorian ISO values, whether the calendar is Jalali or Gregorian.</p>
+        <div class="demo-grid">
+          <div class="demo-card" lang="ps" dir="rtl">
+            <h3>پښتو</h3><p class="locale">Pashto · Jalali range</p>
+            <label for="ps-range">د نېټو موده</label>
+            <input id="ps-range" name="ps_period">
+            <output id="ps-range-out">Start: — · End: —</output>
+          </div>
+          <div class="demo-card" lang="fa-AF" dir="rtl">
+            <h3>دری</h3><p class="locale">Dari · Jalali range</p>
+            <label for="dari-range">محدوده تاریخ</label>
+            <input id="dari-range" name="dari_period">
+            <output id="dari-range-out">Start: — · End: —</output>
+          </div>
+          <div class="demo-card" lang="fa-IR" dir="rtl">
+            <h3>فارسی</h3><p class="locale">Persian · Jalali range</p>
+            <label for="fa-range">بازه تاریخ</label>
+            <input id="fa-range" name="fa_period">
+            <output id="fa-range-out">Start: — · End: —</output>
+          </div>
+          <div class="demo-card" lang="en">
+            <h3>English</h3><p class="locale">English · Gregorian range</p>
+            <label for="en-range">Date range</label>
+            <input id="en-range" name="en_period">
+            <output id="en-range-out">Start: — · End: —</output>
+          </div>
+        </div>
+        <h3>Range mode API</h3>
+        <div class="code-wrap"><div class="code-label">TypeScript <button class="copy-button" type="button">Copy</button></div><pre><code>const picker = new AfghanDatepicker('#period', {
+  locale: 'fa-AF',
+  calendar: 'jalali',
+  selectionMode: 'range',
+  variant: 'soft',
+  onRangeChange: ({ start, end }) =&gt; console.log(start, end)
+});
+
+picker.setRange({ start: '2026-10-01', end: '2026-10-15' });
+picker.getRange(); // { start: '2026-10-01', end: '2026-10-15' }
+picker.setRange(null); // Clear both</code></pre></div>
+        <p>An input named <code>booking</code> submits <code>booking_start</code> and <code>booking_end</code>. Override these with <code>startName</code> and <code>endName</code>. Partially chosen ranges have an empty end field. Single-date inputs continue submitting one field as before.</p>
+        <div class="notice"><strong>Optional attribution:</strong> <code>attribution: true</code> displays a small, visible credit linking to <a href="https://fida.af" rel="nofollow noopener noreferrer" target="_blank">Fida Technologies</a>. It is off by default. The library does not inject hidden links.</div>
       </section>
 
       <section class="doc-section" id="features">
@@ -135,7 +191,7 @@ npm run build
 npm pack
 
 # Inside your application's directory:
-npm install /absolute/path/to/afghan-datepicker/fidatech-afghan-datepicker-0.2.0-beta.1.tgz</code></pre></div>
+npm install /absolute/path/to/afghan-datepicker/fidatech-afghan-datepicker-0.3.0-beta.1.tgz</code></pre></div>
         <p>The tarball includes the compiled JavaScript, TypeScript declarations and CSS. Once an official npm release exists, standard registry installation will be documented here.</p>
       </section>
 
@@ -184,6 +240,12 @@ console.log(picker.getValue());</code></pre></div>
         <div class="table-scroll"><table>
           <thead><tr><th>Option</th><th>Type</th><th>Default</th><th>Notes</th></tr></thead>
           <tbody>
+            <tr><td><code>selectionMode</code></td><td><code>single</code> | <code>range</code></td><td><code>single</code></td><td>One date or an inclusive start/end range</td></tr>
+            <tr><td><code>range</code></td><td>Range object / null</td><td>null</td><td>Gregorian ISO <code>{start, end}</code> in range mode</td></tr>
+            <tr><td><code>startName</code>, <code>endName</code></td><td>string</td><td>name_start, name_end</td><td>Hidden form fields in range mode</td></tr>
+            <tr><td><code>variant</code></td><td>string</td><td><code>classic</code></td><td>classic, soft, minimal</td></tr>
+            <tr><td><code>onRangeChange</code></td><td>callback</td><td>unset</td><td>Called when range start/end changes</td></tr>
+            <tr><td><code>attribution</code></td><td>boolean</td><td>false</td><td>Opt-in visible Fida credit, nofollow</td></tr>
             <tr><td><code>locale</code></td><td>Locale</td><td><code>ps-AF</code></td><td><code>ps-AF</code>, <code>fa-AF</code>, <code>fa-IR</code>, <code>en</code></td></tr>
             <tr><td><code>calendar</code></td><td>Calendar</td><td><code>jalali</code></td><td><code>jalali</code> or <code>gregorian</code></td></tr>
             <tr><td><code>value</code></td><td>string | null</td><td>input date / null</td><td>Initial Gregorian ISO selection</td></tr>
@@ -416,6 +478,28 @@ todayISO();               // Current local Gregorian date</code></pre></div>
         }
       });
     }
+    for (const [id, locale, calendar, credit] of [
+      ['ps-range', 'ps-AF', 'jalali', true],
+      ['dari-range', 'fa-AF', 'jalali', false],
+      ['fa-range', 'fa-IR', 'jalali', false],
+      ['en-range', 'en', 'gregorian', false]
+    ]) {
+      new AfghanDatepicker('#' + id, {
+        locale, calendar, theme: 'light',
+        selectionMode: 'range',
+        attribution: credit,
+        onRangeChange: ({ start, end }) => {
+          document.getElementById(id + '-out').textContent =
+            'Start: ' + (start ?? '—') + ' · End: ' + (end ?? '—');
+        }
+      });
+    }
+    document.getElementById('picker-design').addEventListener('change', (event) => {
+      for (const host of document.querySelectorAll('.demo-card .adp-host')) {
+        host.dataset.variant = event.target.value;
+      }
+    });
+
     // Keep the documentation's active navigation tab in sync with clicks,
     // hash navigation, and the section currently being read while scrolling.
     const sectionLinks = Array.from(document.querySelectorAll('.sidebar a[href^="#"]'));

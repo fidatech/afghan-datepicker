@@ -16,6 +16,9 @@ export interface Dictionary {
   nextYear: string;
   previousYears: string;
   nextYears: string;
+  rangeStart: string;
+  rangeEnd: string;
+  rangeDone: string;
 }
 
 export const locales: Record<Locale, Dictionary> = {
@@ -26,7 +29,8 @@ export const locales: Record<Locale, Dictionary> = {
     chooseDate: 'نېټه وټاکئ',
     chooseMonth: 'میاشت وټاکئ', chooseYear: 'کال وټاکئ',
     previousYear: 'تېر کال', nextYear: 'راتلونکی کال',
-    previousYears: 'تېر کلونه', nextYears: 'راتلونکي کلونه'
+    previousYears: 'تېر کلونه', nextYears: 'راتلونکي کلونه',
+    rangeStart: 'د پیل نېټه وټاکئ', rangeEnd: 'د پای نېټه وټاکئ', rangeDone: 'د نېټو موده ټاکل شوې'
   },
   'fa-AF': {
     months: ['حمل', 'ثور', 'جوزا', 'سرطان', 'اسد', 'سنبله', 'میزان', 'عقرب', 'قوس', 'جدی', 'دلو', 'حوت'],
@@ -35,7 +39,8 @@ export const locales: Record<Locale, Dictionary> = {
     chooseDate: 'تاریخ را انتخاب کنید',
     chooseMonth: 'انتخاب ماه', chooseYear: 'انتخاب سال',
     previousYear: 'سال قبل', nextYear: 'سال بعد',
-    previousYears: 'سال‌های قبل', nextYears: 'سال‌های بعد'
+    previousYears: 'سال‌های قبل', nextYears: 'سال‌های بعد',
+    rangeStart: 'تاریخ شروع را انتخاب کنید', rangeEnd: 'تاریخ پایان را انتخاب کنید', rangeDone: 'محدوده تاریخ انتخاب شد'
   },
   'fa-IR': {
     months: ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'],
@@ -44,7 +49,8 @@ export const locales: Record<Locale, Dictionary> = {
     chooseDate: 'تاریخ را انتخاب کنید',
     chooseMonth: 'انتخاب ماه', chooseYear: 'انتخاب سال',
     previousYear: 'سال قبل', nextYear: 'سال بعد',
-    previousYears: 'سال‌های قبل', nextYears: 'سال‌های بعد'
+    previousYears: 'سال‌های قبل', nextYears: 'سال‌های بعد',
+    rangeStart: 'تاریخ شروع را انتخاب کنید', rangeEnd: 'تاریخ پایان را انتخاب کنید', rangeDone: 'بازه تاریخ انتخاب شد'
   },
   en: {
     months: ['Hamal', 'Sawr', 'Jawza', 'Saratan', 'Asad', 'Sonbola', 'Mizan', 'Aqrab', 'Qaws', 'Jadi', 'Dalw', 'Hut'],
@@ -53,7 +59,8 @@ export const locales: Record<Locale, Dictionary> = {
     chooseDate: 'Choose date',
     chooseMonth: 'Choose month', chooseYear: 'Choose year',
     previousYear: 'Previous year', nextYear: 'Next year',
-    previousYears: 'Previous years', nextYears: 'Next years'
+    previousYears: 'Previous years', nextYears: 'Next years',
+    rangeStart: 'Select start date', rangeEnd: 'Select end date', rangeDone: 'Date range selected'
   }
 };
 

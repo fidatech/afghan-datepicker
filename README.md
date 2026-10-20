@@ -4,12 +4,12 @@
 
 # Afghan Datepicker
 
-**A multilingual Solar Hijri (Jalali) and Gregorian datepicker for developers in Afghanistan and beyond.**
+**A multilingual Solar Hijri (Jalali) and Gregorian datepicker with single-date, date-range and customizable design support.**
 
 پښتو &nbsp;·&nbsp; دری &nbsp;·&nbsp; فارسی &nbsp;·&nbsp; English
 
 [![Build and tests](https://github.com/fidatech/afghan-datepicker/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/fidatech/afghan-datepicker/actions/workflows/ci.yml)
-[![GitHub beta](https://img.shields.io/badge/Release-v0.2.0--beta.1-F77700?style=flat&labelColor=0D1E2A)](https://github.com/fidatech/afghan-datepicker/releases/tag/v0.2.0-beta.1)
+[![GitHub beta](https://img.shields.io/badge/Release-v0.2.0--beta.1-F77700?style=flat&labelColor=0D1E2A)](https://github.com/fidatech/afghan-datepicker/releases/tag/v0.3.0-beta.1)
 [![MIT License](https://img.shields.io/badge/License-MIT-0D1E2A?style=flat&labelColor=F77700)](LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-0D1E2A?style=flat&labelColor=F77700)](examples/typescript)
 
@@ -19,7 +19,7 @@
 
 <div align="center">
 
-**[Get started](#quick-start)** &nbsp;·&nbsp; **[Platforms](#frameworks--platforms)** &nbsp;·&nbsp; **[API reference](#api-at-a-glance)** &nbsp;·&nbsp; **[Download beta](https://github.com/fidatech/afghan-datepicker/releases/tag/v0.2.0-beta.1)**
+**[Get started](#quick-start)** &nbsp;·&nbsp; **[Platforms](#frameworks--platforms)** &nbsp;·&nbsp; **[API reference](#api-at-a-glance)** &nbsp;·&nbsp; **[Download beta](https://github.com/fidatech/afghan-datepicker/releases/tag/v0.3.0-beta.1)**
 
 </div>
 
@@ -54,15 +54,15 @@ Full weekday labels are retained, without automatic abbreviations.
 
 ### Option A · Download a public beta build
 
-Download the verified [**v0.2.0-beta.1 GitHub release**](https://github.com/fidatech/afghan-datepicker/releases/tag/v0.2.0-beta.1).
+Download the verified [**v0.3.0-beta.1 GitHub release**](https://github.com/fidatech/afghan-datepicker/releases/tag/v0.3.0-beta.1).
 
-For npm-based projects, download the `fidatech-afghan-datepicker-0.2.0-beta.1.tgz` file and install it locally:
+For npm-based projects, download the `fidatech-afghan-datepicker-0.3.0-beta.1.tgz` file and install it locally:
 
 ~~~bash
-npm install ./fidatech-afghan-datepicker-0.2.0-beta.1.tgz
+npm install ./fidatech-afghan-datepicker-0.3.0-beta.1.tgz
 ~~~
 
-For plain HTML, PHP, Laravel Blade or Django templates, download the [documentation/assets ZIP](https://github.com/fidatech/afghan-datepicker/releases/download/v0.2.0-beta.1/afghan-datepicker-docs.zip), then copy `dist/afghan-datepicker.global.js` and `src/datepicker.css` into your application's public/static assets.
+For plain HTML, PHP, Laravel Blade or Django templates, download the [documentation/assets ZIP](https://github.com/fidatech/afghan-datepicker/releases/download/v0.3.0-beta.1/afghan-datepicker-docs.zip), then copy `dist/afghan-datepicker.global.js` and `src/datepicker.css` into your application's public/static assets.
 
 ### Option B · Clone and build
 
@@ -79,6 +79,52 @@ python3 -m http.server 4173
 Open **http://localhost:4173/demo/** for the four-language interactive playground and developer documentation.
 
 Run `npm run check` to execute the full test suite. Chrome/Chromium must be installed for the browser tests; configure `CHROME_BIN` if your browser executable is in a nonstandard location.
+
+
+## Date range mode
+
+Choose a **start** and **end** date from one calendar. Every locale supports
+both Jalali and Gregorian views, with the same Gregorian ISO API:
+
+~~~ts
+import { AfghanDatepicker } from '@fidatech/afghan-datepicker';
+import '@fidatech/afghan-datepicker/styles.css';
+
+const range = new AfghanDatepicker('#booking', {
+  selectionMode: 'range',
+  locale: 'ps-AF',                // 'fa-AF', 'fa-IR' or 'en'
+  calendar: 'jalali',            // or 'gregorian'
+  variant: 'soft',               // 'classic', 'soft', 'minimal'
+  onRangeChange: ({ start, end }) => console.log(start, end)
+});
+
+range.getRange(); // { start: null, end: null } initially
+range.setRange({ start: '2026-10-01', end: '2026-10-15' });
+range.setRange(null); // Clear both fields
+~~~
+
+An input named \`booking\` generates hidden fields \`booking_start\` and
+\`booking_end\` for backend forms. Override names with \`startName\` and
+\`endName\`. On the first click the start date is submitted with an empty end;
+after the second click the inclusive range is complete. The calendar highlights
+all days between the endpoints, including across month/year boundaries.
+Single-date behavior is unchanged.
+
+### Visual designs and visible attribution
+
+The \`variant\` option selects **Classic** (navy), **Soft** (orange) or
+**Minimal** (clean), independently of \`theme: 'light' | 'dark' | 'auto'\`.
+CSS variables can override the palette. The [documentation playground](demo/index.html)
+includes a design selector and four working range demos.
+
+**Attribution is optional and transparent.** Setting \`attribution: true\`
+adds a small **visible** “Powered by Fida Technologies” link to
+[https://fida.af](https://fida.af), with \`rel="nofollow"\`.
+Its default is \`false\`; the package never inserts hidden promotional links.
+
+**Mobile scope:** the browser range picker works in web applications,
+including mobile browsers. The separate React Native and Flutter prototypes
+do not yet offer native range selection.
 
 ## Integration examples
 
@@ -151,6 +197,12 @@ Other server-rendered frameworks can serve the standalone browser bundle, but in
 
 | Option | Default | Description |
 | :--- | :--- | :--- |
+| `selectionMode` | `single` | `single` or `range` |
+| `range` | `null` | Initial `{ start, end }` Gregorian ISO dates |
+| `startName`, `endName` | Default hidden range field names | Override submitted start/end names |
+| `variant` | `classic` | `classic`, `soft`, `minimal` |
+| `onRangeChange` | Unset | Range change callback |
+| `attribution` | `false` | Optional visible Fida credit (nofollow) |
 | `locale` | `ps-AF` | `ps-AF`, `fa-AF`, `fa-IR`, `en` |
 | `calendar` | `jalali` | `jalali` or `gregorian` |
 | `value` | `null` or input ISO | Initial Gregorian date |
@@ -226,7 +278,7 @@ The [GitHub Actions suite](.github/workflows/ci.yml) also validates the example 
 
 ## Documentation & community
 
-Explore the [documentation source and local demo](demo/index.html), [platform integration guide](docs/PLATFORMS.md) and [release instructions](docs/RELEASING.md). An offline documentation bundle is included in the [GitHub beta release](https://github.com/fidatech/afghan-datepicker/releases/tag/v0.2.0-beta.1).
+Explore the [documentation source and local demo](demo/index.html), [platform integration guide](docs/PLATFORMS.md) and [release instructions](docs/RELEASING.md). An offline documentation bundle is included in the [GitHub beta release](https://github.com/fidatech/afghan-datepicker/releases/tag/v0.3.0-beta.1).
 
 Contributions are welcome, particularly Pashto/Dari language review, accessibility testing and real-world framework integrations. Read [CONTRIBUTING.md](CONTRIBUTING.md), open an [issue](https://github.com/fidatech/afghan-datepicker/issues) or submit a pull request.
 
