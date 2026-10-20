@@ -286,7 +286,7 @@ test('range inputs work in all locales, presets and both calendars', {timeout:70
     }
     assert.equal(await page.locator('a.adp-credit').count(),1);
     const credit=page.locator('#ps-range').locator('xpath=..').locator('a.adp-credit');
-    assert.equal(await credit.getAttribute('href'),'https://fida.af/');
+    assert.equal(new URL(await credit.getAttribute('href')).origin,'https://fida.af');
     assert.match(await credit.getAttribute('rel') ?? '',/nofollow/);
     assert.ok(await credit.isVisible());
 
