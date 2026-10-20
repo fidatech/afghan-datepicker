@@ -1,7 +1,7 @@
 {
   "name": "@fidatech/afghan-datepicker",
-  "version": "0.2.0-beta.1",
-  "description": "Pashto, Dari, Persian and English Solar Hijri / Gregorian datepicker, browser and framework integrations",
+  "version": "0.3.0-beta.1",
+  "description": "Pashto, Dari, Persian and English Jalali/Gregorian date and date-range picker with customizable presets",
   "type": "module",
   "license": "MIT",
   "author": "Fida Technologies",

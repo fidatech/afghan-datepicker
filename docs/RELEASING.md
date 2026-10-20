@@ -5,7 +5,7 @@
 A successful main-branch **Tests and build** run triggers the
 **Publish public beta release** workflow. It assembles an npm tarball and
 an offline documentation ZIP, then creates (once) the public GitHub
-prerelease v0.2.0-beta.1, including both assets.
+prerelease v0.3.0-beta.1, including both assets.
 
 All source code is already publicly visible in the GitHub repository.
 A GitHub beta release does **not** prove that the npm registry is published.

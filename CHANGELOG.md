@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.3.0-beta.1 — Date range, style variants and transparent credits
+
+- Added inclusive date-range selection for both Jalali and Gregorian calendars
+  in Pashto, Dari, Persian and English.
+- Added `selectionMode: 'range'`, `getRange()`, `setRange()`,
+  `onRangeChange`, initial `range`, and start/end hidden form fields.
+- Added three styles: classic, soft and minimal.
+- Added a range playground and styling selector to the documentation.
+- Added optional, visible Fida attribution with nofollow. Defaults to off;
+  no hidden links or tracking are introduced.
+- Extended Chromium regression coverage for locales, calendars, range endpoints,
+  submitted ISO values, invalid bounds and styling.
+
+
 ## 0.2.0-beta.1 — Cross-platform integration preview
 
 - Added standalone browser script bundle for script-tag, core PHP and Django.

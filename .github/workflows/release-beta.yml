@@ -38,14 +38,14 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          if gh release view v0.2.0-beta.1 >/dev/null 2>&1; then
+          if gh release view v0.3.0-beta.1 >/dev/null 2>&1; then
             echo "Public beta already exists; no duplicate release."
             exit 0
           fi
-          gh release create v0.2.0-beta.1 \
+          gh release create v0.3.0-beta.1 \
             "$RUNNER_TEMP"/*.tgz \
             "$RUNNER_TEMP/afghan-datepicker-docs.zip" \
-            --title "Afghan Datepicker v0.2.0-beta.1" \
+            --title "Afghan Datepicker v0.3.0-beta.1" \
             --notes "Public beta: web packages and runnable PHP, Laravel, Django, TypeScript, React and Vue examples. React Native and Flutter remain experimental sample code. Not yet published to npm or pub.dev." \
             --prerelease \
             --target "${{ github.event.workflow_run.head_sha }}"

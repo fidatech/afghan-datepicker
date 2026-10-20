@@ -5,7 +5,28 @@ import type { Calendar, CalendarDate, YearMonth } from './calendar.js';
 import { digits, getMonthName, locales } from './locales.js';
 import type { Locale, Numerals } from './locales.js';
 
+export interface DateRangeValue {
+  /** Inclusive Gregorian ISO start. Null while no first date was picked. */
+  start: string | null;
+  /** Inclusive Gregorian ISO end. Null while choosing the second date. */
+  end: string | null;
+}
+export type DatepickerVariant = 'classic' | 'soft' | 'minimal';
+
 export interface DatepickerOptions {
+  /** Defaults to 'single'; 'range' enables start/end selection in one popup. */
+  selectionMode?: 'single' | 'range';
+  /** Initial range values; Gregorian YYYY-MM-DD. */
+  range?: DateRangeValue | null;
+  /** Hidden form field names for range mode (defaults to name_start/name_end). */
+  startName?: string;
+  endName?: string;
+  /** Visual preset, independent from light/dark theme and CSS variable overrides. */
+  variant?: DatepickerVariant;
+  /** Called with a fresh object after first date, second date or clear. */
+  onRangeChange?: (range: DateRangeValue) => void;
+  /** Explicitly opt in to a visible, nofollow Fida credit (default false). */
+  attribution?: boolean;
   locale?: Locale;
   calendar?: Calendar;
   /** Selected date as Gregorian YYYY-MM-DD, even when displaying Jalali. */
@@ -30,11 +51,16 @@ export class AfghanDatepicker {
   private host: HTMLSpanElement;
   private popup: HTMLDivElement;
   private formInput: HTMLInputElement | null = null;
+  private formStart: HTMLInputElement | null = null;
+  private formEnd: HTMLInputElement | null = null;
   private originalName: string | null;
   private originalPlaceholder: string;
   private originalReadonly: boolean;
   private originalAria: string | null;
   private selected: string | null;
+  private rangeStart: string | null = null;
+  private rangeEnd: string | null = null;
+  private selectionMode: 'single' | 'range';
   private view: YearMonth;
   private locale: Locale;
   private calendar: Calendar;
@@ -43,6 +69,7 @@ export class AfghanDatepicker {
   private min?: string;
   private max?: string;
   private onChange?: (iso: string | null) => void;
+  private onRangeChange?: (range: DateRangeValue) => void;
   private disposed = false;
   private suppressFocusOpen = false;
   private displayMode: 'days' | 'months' | 'years' = 'days';
@@ -55,6 +82,14 @@ export class AfghanDatepicker {
     }
     if (!input.parentNode) throw new Error('Date input must be attached to the DOM');
     this.input = input;
+    this.selectionMode = options.selectionMode ?? 'single';
+    if (this.selectionMode !== 'single' && this.selectionMode !== 'range') {
+      throw new RangeError('selectionMode must be single or range');
+    }
+    if (options.variant && !(['classic','soft','minimal'] as string[]).includes(options.variant)) {
+      throw new RangeError('Unknown datepicker variant');
+    }
+    this.onRangeChange = options.onRangeChange;
     this.locale = options.locale ?? 'ps-AF';
     this.calendar = options.calendar ?? 'jalali';
     this.numerals = options.numerals ?? (this.locale === 'en' ? 'latin' : 'persian');
@@ -75,7 +110,19 @@ export class AfghanDatepicker {
       throw new RangeError('min cannot be after max');
     }
 
-    const supplied = options.value === undefined
+    if (this.selectionMode === 'range' && options.range) {
+      const { start, end } = options.range;
+      if (end !== null && start === null) throw new RangeError('Range end requires start');
+      for (const iso of [start, end]) {
+        if (!iso) continue;
+        parseISO(iso);
+        if (!this.allowed(iso)) throw new RangeError('Range date is outside min/max');
+      }
+      if (start && end && start > end) throw new RangeError('Range start must be <= end');
+      this.rangeStart = start;
+      this.rangeEnd = end;
+    }
+    const supplied = this.selectionMode === 'range' ? null : options.value === undefined
       ? (input.dataset.iso || (/^\d{4}-\d{2}-\d{2}$/.test(input.value) ? input.value : null))
       : options.value;
     if (supplied) {
@@ -83,7 +130,7 @@ export class AfghanDatepicker {
       if (!this.allowed(supplied)) throw new RangeError('Selected value is outside min/max');
     }
     this.selected = supplied || null;
-    this.view = toCalendar(this.selected ?? todayISO(), this.calendar);
+    this.view = toCalendar((this.selectionMode === 'range' ? this.rangeStart : this.selected) ?? todayISO(), this.calendar);
     this.yearPageStart = Math.floor(this.view.year / 12) * 12;
 
     this.originalName = input.getAttribute('name');
@@ -94,6 +141,8 @@ export class AfghanDatepicker {
     this.host.className = 'adp-host';
     this.host.dir = this.locale === 'en' ? 'ltr' : 'rtl';
     this.host.dataset.theme = options.theme ?? 'auto';
+    this.host.dataset.variant = options.variant ?? 'classic';
+    this.host.dataset.selection = this.selectionMode;
 
     input.parentNode.insertBefore(this.host, input);
     this.host.appendChild(input);
@@ -103,7 +152,26 @@ export class AfghanDatepicker {
     input.setAttribute('aria-expanded', 'false');
     if (!this.originalPlaceholder) input.placeholder = locales[this.locale].chooseDate;
 
-    if (this.originalName !== null) {
+    if (this.selectionMode === 'range') {
+      const startName = options.startName ?? (this.originalName === null ? null : this.originalName + '_start');
+      const endName = options.endName ?? (this.originalName === null ? null : this.originalName + '_end');
+      if ((startName === null) !== (endName === null)) {
+        throw new RangeError('Both startName and endName are required for unnamed range inputs');
+      }
+      if (startName !== null && endName !== null) {
+        if (!startName.trim() || !endName.trim() || startName === endName) {
+          throw new RangeError('Start and end form field names must be distinct and nonempty');
+        }
+        this.formStart = document.createElement('input');
+        this.formStart.type = 'hidden';
+        this.formStart.name = startName;
+        this.formEnd = document.createElement('input');
+        this.formEnd.type = 'hidden';
+        this.formEnd.name = endName;
+        this.host.append(this.formStart, this.formEnd);
+      }
+      input.removeAttribute('name');
+    } else if (this.originalName !== null) {
       this.formInput = document.createElement('input');
       this.formInput.type = 'hidden';
       this.formInput.name = this.originalName;
@@ -117,6 +185,15 @@ export class AfghanDatepicker {
     this.popup.setAttribute('role', 'dialog');
     this.popup.setAttribute('aria-label', locales[this.locale].chooseDate);
     this.host.appendChild(this.popup);
+    if (options.attribution === true) {
+      const credit = document.createElement('a');
+      credit.href = 'https://fida.af';
+      credit.rel = 'nofollow noopener noreferrer';
+      credit.target = '_blank';
+      credit.className = 'adp-credit';
+      credit.textContent = 'Powered by Fida Technologies';
+      this.host.appendChild(credit);
+    }
     this.refreshInput();
 
     input.addEventListener('click', this.open);
@@ -131,9 +208,39 @@ export class AfghanDatepicker {
     return this.selected;
   }
 
-  /** Set a Gregorian ISO date, or null to clear. */
+  /** Get the inclusive Gregorian range or a partially chosen range. */
+  getRange(): DateRangeValue {
+    this.assertAlive();
+    if (this.selectionMode !== 'range') throw new Error('Enable selectionMode: range to use getRange');
+    return { start: this.rangeStart, end: this.rangeEnd };
+  }
+
+  /** Change range programmatically. Null clears both dates. */
+  setRange = (range: DateRangeValue | null): void => {
+    this.assertAlive();
+    if (this.selectionMode !== 'range') throw new Error('Enable selectionMode: range to use setRange');
+    const start = range?.start ?? null;
+    const end = range?.end ?? null;
+    if (end && !start) throw new RangeError('Range end requires start');
+    for (const iso of [start, end]) {
+      if (!iso) continue;
+      parseISO(iso);
+      if (!this.allowed(iso)) throw new RangeError('Range date is outside min/max');
+    }
+    if (start && end && start > end) throw new RangeError('Range start must be <= end');
+    const changed = start !== this.rangeStart || end !== this.rangeEnd;
+    this.rangeStart = start;
+    this.rangeEnd = end;
+    if (start) this.view = toCalendar(start, this.calendar);
+    this.refreshInput();
+    if (!this.popup.hidden) this.render();
+    if (changed) this.onRangeChange?.(this.getRange());
+  };
+
+  /** Set a Gregorian ISO date, or null to clear (single mode only). */
   setValue = (iso: string | null): void => {
     this.assertAlive();
+    if (this.selectionMode !== 'single') throw new Error('Use setRange in range mode');
     if (iso !== null) {
       parseISO(iso);
       if (!this.allowed(iso)) throw new RangeError('Selected value is outside min/max');
@@ -191,7 +298,26 @@ export class AfghanDatepicker {
     return (!this.min || iso >= this.min) && (!this.max || iso <= this.max);
   }
 
+  private displayDate(iso: string): string {
+    const d = toCalendar(iso, this.calendar);
+    return digits(d.day, this.numerals) + ' ' +
+      getMonthName(d.month, this.calendar, this.locale) + ' ' +
+      digits(d.year, this.numerals);
+  }
+
   private refreshInput(): void {
+    if (this.selectionMode === 'range') {
+      this.input.value = this.rangeStart
+        ? this.displayDate(this.rangeStart) +
+          (this.rangeEnd ? ' – ' + this.displayDate(this.rangeEnd) : ' – …')
+        : '';
+      this.input.dataset.isoStart = this.rangeStart ?? '';
+      this.input.dataset.isoEnd = this.rangeEnd ?? '';
+      this.input.dataset.iso = '';
+      if (this.formStart) this.formStart.value = this.rangeStart ?? '';
+      if (this.formEnd) this.formEnd.value = this.rangeEnd ?? '';
+      return;
+    }
     if (this.selected) {
       const date = toCalendar(this.selected, this.calendar);
       this.input.value = digits(date.day, this.numerals) + ' ' +
@@ -400,22 +526,41 @@ export class AfghanDatepicker {
       const date: CalendarDate = { ...this.view, day };
       const iso = fromCalendar(date, this.calendar);
       const cell = this.button(digits(day, this.numerals), 'adp-day', () => {
-        this.setValue(iso);
-        this.close();
-        this.returnFocus();
+        if (this.selectionMode === 'range') {
+          if (!this.rangeStart || this.rangeEnd || iso < this.rangeStart) {
+            this.setRange({ start: iso, end: null });
+          } else {
+            this.setRange({ start: this.rangeStart, end: iso });
+            this.close();
+            this.returnFocus();
+          }
+        } else {
+          this.setValue(iso);
+          this.close();
+          this.returnFocus();
+        }
       });
       cell.dataset.iso = iso;
       cell.setAttribute('aria-label', digits(day, this.numerals) + ' ' +
         getMonthName(this.view.month, this.calendar, this.locale) + ' ' +
         digits(this.view.year, this.numerals));
-      cell.setAttribute('aria-pressed', String(iso === this.selected));
-      if (iso === this.selected) cell.classList.add('adp-selected');
+      const isRange = this.selectionMode === 'range';
+      const isStart = isRange && iso === this.rangeStart;
+      const isEnd = isRange && iso === this.rangeEnd;
+      const isWithin = isRange && this.rangeStart && this.rangeEnd &&
+        iso > this.rangeStart && iso < this.rangeEnd;
+      const isSelected = isRange ? (isStart || isEnd) : iso === this.selected;
+      cell.setAttribute('aria-pressed', String(isSelected));
+      if (isSelected) cell.classList.add('adp-selected');
+      if (isStart) cell.classList.add('adp-range-start');
+      if (isEnd) cell.classList.add('adp-range-end');
+      if (isWithin) cell.classList.add('adp-in-range');
       if (iso === today) {
         cell.classList.add('adp-today');
         cell.setAttribute('aria-current', 'date');
       }
       cell.disabled = !this.allowed(iso);
-      cell.tabIndex = iso === (this.selected ?? today) ? 0 : -1;
+      cell.tabIndex = iso === (this.selectionMode === 'range' ? (this.rangeEnd ?? this.rangeStart ?? today) : (this.selected ?? today)) ? 0 : -1;
       grid.append(cell);
     }
     this.popup.append(grid);
@@ -423,16 +568,29 @@ export class AfghanDatepicker {
 
   private renderFooter(): void {
     const dictionary = locales[this.locale];
+    if (this.selectionMode === 'range') {
+      const hint = document.createElement('div');
+      hint.className = 'adp-range-status';
+      hint.setAttribute('role', 'status');
+      hint.textContent = !this.rangeStart ? dictionary.rangeStart :
+        !this.rangeEnd ? dictionary.rangeEnd : dictionary.rangeDone;
+      this.popup.append(hint);
+    }
     const footer = document.createElement('div');
     footer.className = 'adp-footer';
     const todayButton = this.button(dictionary.today, 'adp-action adp-today-action', () => {
-      this.setValue(todayISO());
+      if (this.selectionMode === 'range') {
+        this.setRange({ start: todayISO(), end: todayISO() });
+      } else {
+        this.setValue(todayISO());
+      }
       this.close();
       this.returnFocus();
     });
     todayButton.disabled = !this.allowed(todayISO());
     const clearButton = this.button(dictionary.clear, 'adp-action adp-clear-action', () => {
-      this.setValue(null);
+      if (this.selectionMode === 'range') this.setRange(null);
+      else this.setValue(null);
       this.close();
       this.returnFocus();
     });

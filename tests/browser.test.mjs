@@ -123,7 +123,7 @@ test('date inputs open functioning calendar popups in Chromium', {timeout:45000}
     await mark.evaluate((img) => img.decode());
     assert.ok(await mark.evaluate((img) => img.naturalWidth > 0),
       'Fida logo is served as a real image');
-    assert.equal(await page.locator('main .doc-section').count(), 15,
+    assert.equal(await page.locator('main .doc-section').count(), 16,
       'Developer documentation contains the complete set of sections');
     assert.equal(await page.locator('a[href="#installation"]').count() > 0, true);
     assert.equal(await page.locator('#platforms .feature').count(), 8);
@@ -221,6 +221,137 @@ test('date inputs open functioning calendar popups in Chromium', {timeout:45000}
       await new Promise((resolveClose, rejectClose) => server.close((error) =>
         error ? rejectClose(error) : resolveClose()
       ));
+    }
+  }
+});
+
+
+test('range inputs work in all locales, presets and both calendars', {timeout:70000}, async () => {
+  const {server,url} = await startServer();
+  let browser;
+  try {
+    browser = await chromium.launch({
+      executablePath: await findChrome(),
+      headless:true,
+      args:process.platform === 'linux' ? ['--no-sandbox','--disable-dev-shm-usage'] : []
+    });
+    const page = await browser.newPage({viewport:{width:1365,height:950}});
+    const errors = [];
+    page.on('pageerror',(e) => errors.push(e.message));
+    const response = await page.goto(url);
+    assert.equal(response?.status(),200);
+    await page.locator('#ps-range').waitFor();
+
+    const styleSelector = page.locator('#picker-design');
+    assert.deepEqual(await styleSelector.locator('option').evaluateAll(
+      (els) => els.map((e) => e.value)), ['classic','soft','minimal']);
+    await styleSelector.selectOption('soft');
+    assert.equal(await page.locator('#ps-range').locator('xpath=..').getAttribute('data-variant'),'soft');
+    assert.equal(await page.locator('#ps-range').locator('xpath=..').evaluate(
+      (host) => getComputedStyle(host).getPropertyValue('--adp-accent').trim()), '#f77700');
+    await styleSelector.selectOption('minimal');
+    assert.equal(await page.locator('#en').locator('xpath=..').getAttribute('data-variant'),'minimal');
+    await styleSelector.selectOption('classic');
+
+    for (const [id, name] of [
+      ['ps-range','ps_period'],
+      ['dari-range','dari_period'],
+      ['fa-range','fa_period'],
+      ['en-range','en_period']
+    ]) {
+      const field = page.locator('#' + id);
+      await field.click();
+      const popup = field.locator('xpath=..').locator('.adp-popup');
+      assert.equal(await popup.locator('.adp-weekday').count(),7);
+      const available = popup.locator('.adp-day:not([disabled])');
+      assert.ok(await available.count() >= 28);
+      const start = await available.nth(5).getAttribute('data-iso');
+      await available.nth(5).click();
+      assert.equal(await popup.evaluate((el) => el.hidden),false,
+        id + ': first selection must keep popup open');
+      assert.equal(await field.locator('xpath=..').locator('input[type="hidden"][name="' + name + '_start"]').inputValue(),start);
+      assert.equal(await field.locator('xpath=..').locator('input[type="hidden"][name="' + name + '_end"]').inputValue(),'');
+      const end = await popup.locator('.adp-day:not([disabled])').nth(12).getAttribute('data-iso');
+      await popup.locator('.adp-day:not([disabled])').nth(12).click();
+      assert.equal(await popup.evaluate((el) => el.hidden),true,
+        id + ': second selection must close popup');
+      assert.ok(start <= end);
+      assert.equal(await field.locator('xpath=..').locator('input[type="hidden"][name="' + name + '_end"]').inputValue(),end);
+      assert.ok((await page.locator('#' + id + '-out').textContent()).includes(end));
+      await field.click();
+      assert.equal(await popup.locator('.adp-range-start').count(),1);
+      assert.equal(await popup.locator('.adp-range-end').count(),1);
+      assert.ok(await popup.locator('.adp-in-range').count() > 0);
+      await page.keyboard.press('Escape');
+    }
+    assert.equal(await page.locator('a.adp-credit').count(),1);
+    const credit=page.locator('#ps-range').locator('xpath=..').locator('a.adp-credit');
+    assert.equal(await credit.getAttribute('href'),'https://fida.af/');
+    assert.match(await credit.getAttribute('rel') ?? '',/nofollow/);
+    assert.ok(await credit.isVisible());
+
+    // The same core range API works for a Gregorian UI in Pashto and for
+    // a Jalali UI in English; there is no locale/calendar coupling.
+    await page.addScriptTag({url:'/dist/afghan-datepicker.global.js'});
+    const result=await page.evaluate(() => {
+      const wrap=document.createElement('div');
+      wrap.style.cssText='max-width:420px;padding:20px';
+      const input=document.createElement('input');
+      input.name='trip';
+      wrap.append(input);
+      document.body.append(wrap);
+      const C=window.AfghanDatepicker;
+      const picker=new C(input,{
+        selectionMode:'range',calendar:'gregorian',locale:'ps-AF',
+        min:'2024-01-01',max:'2026-12-31',
+        startName:'departure',endName:'return_date',
+        variant:'soft'
+      });
+      picker.setRange({start:'2024-12-30',end:'2025-01-03'});
+      const saved=picker.getRange();
+      const formFields=Array.from(wrap.querySelectorAll('input[type=hidden]')).map(
+        (i)=>[i.name,i.value]);
+      let invalidBounds=false,invalidOrder=false;
+      try{picker.setRange({start:'2023-12-31',end:'2024-01-01'});}catch(e){invalidBounds=e instanceof RangeError;}
+      try{picker.setRange({start:'2025-01-03',end:'2024-12-30'});}catch(e){invalidOrder=e instanceof RangeError;}
+      picker.open();
+      const ui={
+        weekdays:wrap.querySelectorAll('.adp-weekday').length,
+        startCell:!!wrap.querySelector('.adp-range-start'),
+        inRange:wrap.querySelectorAll('.adp-in-range').length
+      };
+      picker.setRange(null);
+      const cleared=picker.getRange();
+      picker.destroy();
+      const restored=input.name==='trip' && input.readOnly===false && !wrap.querySelector('.adp-host');
+      wrap.remove();
+      const second=document.createElement('input');
+      second.name='other';
+      document.body.append(second);
+      const other=new C(second,{selectionMode:'range',calendar:'jalali',locale:'en',variant:'minimal'});
+      other.setRange({start:'2024-03-19',end:'2024-04-02'});
+      const englishJalali=other.getRange();
+      other.destroy();
+      second.remove();
+      return {saved,formFields,invalidBounds,invalidOrder,ui,cleared,restored,englishJalali};
+    });
+    assert.deepEqual(result.saved,{start:'2024-12-30',end:'2025-01-03'});
+    assert.deepEqual(result.formFields,[['departure','2024-12-30'],['return_date','2025-01-03']]);
+    assert.ok(result.invalidBounds);
+    assert.ok(result.invalidOrder);
+    assert.equal(result.ui.weekdays,7);
+    assert.ok(result.ui.startCell);
+    assert.ok(result.ui.inRange > 0);
+    assert.deepEqual(result.cleared,{start:null,end:null});
+    assert.ok(result.restored);
+    assert.deepEqual(result.englishJalali,{start:'2024-03-19',end:'2024-04-02'});
+    assert.deepEqual(errors,[]);
+  } finally {
+    try {
+      await browser?.close();
+    } finally {
+      await new Promise((resolveClose,rejectClose) =>
+        server.close((err) => err ? rejectClose(err) : resolveClose()));
     }
   }
 });

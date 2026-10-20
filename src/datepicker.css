@@ -128,3 +128,102 @@
 /* Fida's orange highlights actions while dark navy remains the selected-date color. */
 .adp-host .adp-today-action{background:#fff0e2;color:#ad4a00}
 .adp-host[data-theme="dark"] .adp-today-action{background:#3a3027;color:#ffb46e}
+
+
+/* Range selection. Dates remain Gregorian ISO internally for every locale. */
+.adp-host[data-selection="range"] .adp-input {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.adp-host .adp-day.adp-in-range {
+  background: var(--adp-soft-strong);
+  color: var(--adp-text);
+  border-radius: 5px;
+}
+.adp-host .adp-day.adp-range-start,
+.adp-host .adp-day.adp-range-end {
+  background: var(--adp-accent);
+  color: var(--adp-accent-text);
+  font-weight: 750;
+  box-shadow: 0 3px 8px rgba(13,30,42,.16);
+}
+.adp-host .adp-range-status {
+  margin-top: 10px;
+  padding: 7px 10px;
+  font-size: 11px;
+  font-weight: 650;
+  text-align: center;
+  border-radius: 7px;
+  color: var(--adp-muted);
+  background: var(--adp-soft);
+}
+
+/* Three selectable visual presets. Default remains classic. */
+.adp-host[data-variant="soft"] {
+  --adp-accent: #f77700;
+  --adp-accent-text: #fff;
+  --adp-soft: #fff6ed;
+  --adp-soft-strong: #ffebd5;
+  --adp-weekday: #fff6ed;
+  --adp-hover: #ffeedc;
+}
+.adp-host[data-variant="soft"] .adp-popup {
+  border-radius: 23px;
+  box-shadow: 0 21px 56px rgba(19,36,49,.12);
+  padding: 16px;
+}
+.adp-host[data-variant="soft"] .adp-day,
+.adp-host[data-variant="soft"] .adp-choice,
+.adp-host[data-variant="soft"] .adp-nav,
+.adp-host[data-variant="soft"] .adp-action {
+  border-radius: 14px;
+}
+.adp-host[data-variant="soft"] .adp-input {
+  border-radius: 16px;
+}
+.adp-host[data-variant="minimal"] {
+  --adp-soft: #f8fafb;
+  --adp-soft-strong: #e9eff2;
+  --adp-weekday: transparent;
+  --adp-hover: #eef3f5;
+}
+.adp-host[data-variant="minimal"] .adp-popup {
+  border-radius: 9px;
+  box-shadow: 0 6px 22px rgba(13,30,42,.08);
+  padding: 12px;
+}
+.adp-host[data-variant="minimal"] .adp-input {
+  border-radius: 5px;
+  border-width: 0 0 1px;
+}
+.adp-host[data-variant="minimal"] .adp-nav {
+  border: 0;
+  background: transparent;
+}
+.adp-host[data-variant="minimal"] .adp-day,
+.adp-host[data-variant="minimal"] .adp-choice,
+.adp-host[data-variant="minimal"] .adp-action {
+  border-radius: 5px;
+}
+.adp-host[data-variant="minimal"] .adp-weekday {
+  font-weight: 700;
+}
+
+/* Optional visible credit — never inserted unless attribution:true is set. */
+.adp-host .adp-credit {
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+  padding: 5px 0 0;
+  font-family: inherit;
+  font-weight: 500;
+  font-size: 10px;
+  line-height: 1.5;
+  color: var(--adp-muted);
+  text-decoration: underline;
+  text-decoration-color: var(--adp-border);
+  text-underline-offset: 2px;
+}
+.adp-host .adp-credit:hover,
+.adp-host .adp-credit:focus-visible { color: var(--adp-accent); }

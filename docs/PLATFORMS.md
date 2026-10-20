@@ -26,6 +26,28 @@ Nuxt, Next.js, Rails and ASP.NET can load the same JS/CSS assets. These are
 integration patterns, not claims that every framework has been individually
 validated.
 
+## Date range mode in web applications
+
+For **every** supported locale and calendar view, the web package can select
+a start and end date from one popup:
+
+~~~js
+new window.AfghanDatepicker('#period', {
+  selectionMode: 'range',
+  locale: 'fa-AF',
+  calendar: 'jalali',
+  variant: 'classic'
+});
+~~~
+
+An HTML input named `period` submits `period_start` and `period_end`, both
+Gregorian `YYYY-MM-DD`. Custom field names are supported through
+`startName` and `endName`. Backend validation should ensure the end
+is not earlier than the start, and both dates meet your business rules.
+
+The separate React Native and Flutter prototypes do **not** yet offer
+equivalent native date-range selection.
+
 ## Install from source
 
 Requires Node.js 20+, and Chrome when running the browser test suite.
