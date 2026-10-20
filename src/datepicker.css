@@ -162,7 +162,7 @@
 /* Three selectable visual presets. Default remains classic. */
 .adp-host[data-variant="soft"] {
   --adp-accent: #f77700;
-  --adp-accent-text: #fff;
+  --adp-accent-text: #102b3f;
   --adp-soft: #fff6ed;
   --adp-soft-strong: #ffebd5;
   --adp-weekday: #fff6ed;
@@ -227,3 +227,23 @@
 }
 .adp-host .adp-credit:hover,
 .adp-host .adp-credit:focus-visible { color: var(--adp-accent); }
+
+/* Soft preset contrast in dark and automatic-dark appearances. */
+.adp-host[data-theme="dark"][data-variant="soft"] {
+  --adp-accent: #ffa34c;
+  --adp-accent-text: #122a3b;
+  --adp-soft: #392a20;
+  --adp-soft-strong: #523a29;
+  --adp-weekday: #2d2a28;
+  --adp-hover: #483427;
+}
+@media (prefers-color-scheme: dark) {
+  .adp-host[data-theme="auto"][data-variant="soft"] {
+    --adp-accent: #ffa34c;
+    --adp-accent-text: #122a3b;
+    --adp-soft: #392a20;
+    --adp-soft-strong: #523a29;
+    --adp-weekday: #2d2a28;
+    --adp-hover: #483427;
+  }
+}
